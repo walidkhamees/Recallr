@@ -11,7 +11,6 @@
         margin: 0;
       }
       body {
-        background-color: #eaeaea;
         margin: 0;
       }
       header {
@@ -21,13 +20,13 @@
       header h1 {
         color: white;
       }
+
       #logo {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5em;
         width: fit-content;
-        margin: 0 1em;
         cursor: pointer;
       }
 
@@ -40,6 +39,7 @@
         justify-content: space-between;
         align-items: center;
         margin: 0 auto;
+        padding: 1em 1em;
       }
 
       nav > ul {
@@ -52,11 +52,107 @@
         color: white;
         font-weight: bold;
       }
+
+      .hero {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4em 2em;
+        background: linear-gradient(to right, #f0f4ff, #ffffff);
+        gap: 2em;
+        flex-wrap: wrap;
+      }
+
+      .hero img {
+        max-width: 100%;
+        width: 400px;
+        height: auto;
+        border-radius: 1em;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .hero .container {
+        max-width: 600px;
+      }
+
+      .hero h2 {
+        font-size: 2.5em;
+        margin-bottom: 1em;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .hero p {
+        font-size: 1.125em;
+        line-height: 1.6;
+        color: #555;
+      }
+
+      .cta-button {
+        padding: 0.5em 1em;
+        background-color: #0077b6;
+        text-decoration: none;
+        color: white;
+        border-radius: 0.5em;
+        font-weight: bold;
+      }
+
+      .features {
+        padding: 2em 0;
+      }
+      .features > .container {
+        margin: 0 auto;
+      }
+      .features h3 {
+        font-size: 1.5em;
+        margin-bottom: 1em;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+      }
+      .features ul {
+        display: flex;
+        gap: 2em;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        flex-wrap: wrap; /* for responsiveness */
+      }
+
+      .features li {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        flex: 1;
+        min-width: 200px;
+        max-width: 250px;
+      }
+
+      .features li img {
+        margin-bottom: 1em;
+      }
+
+      .features li p {
+        margin: 0;
+        font-size: 1em;
+        color: #555;
+        line-height: 1.5;
+      }
+
+      footer {
+        padding: 2em 0;
+        background-color: #f0f4ff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     </style>
   </head>
 
   <body>
-
     <header>
       <div class="container">
         <div id="logo">
@@ -70,12 +166,69 @@
         </div>
         <nav>
           <ul>
-            <li><a href="/deck">Decks</a></li>
             <li><a href="/help">Help</a></li>
           </ul>
         </nav>
       </div>
     </header>
+
+    <div class="hero">
+      <img
+        src="/static/images/hero.webp"
+        alt="Image of sticky note on a notebook with a pen next to it"
+      />
+      <div class="container">
+        <h2>Flash Cards for smarter learning</h2>
+        <p>
+          Recallr is a web app that helps you learn new things by creating flash
+          cards. It's like a digital flashcard app, but for your brain.
+        </p>
+
+        <a href="/decks" class="cta-button">Start learning</a>
+      </div>
+    </div>
+
+    <section class="features">
+      <div class="container">
+        <h3>Why Recallr?</h3>
+        <ul>
+          <li>
+            <img
+              src="/static/svg/writing.svg"
+              alt="Writing Icon"
+              width="48"
+              height="48"
+            />
+            <p>
+              <strong>Personalized learning</strong>: Create decks tailored to
+              your learning style and goals
+            </p>
+          </li>
+          <li>
+            <img
+              src="/static/svg/timer.svg"
+              alt="Timer Icon"
+              width="48"
+              height="48"
+            />
+            <p><strong>Quizes</strong>: Test your knowledge with quizes</p>
+          </li>
+
+          <li>
+            <img
+              src="/static/svg/pin.svg"
+              alt="Study Icon"
+              width="48"
+              height="48"
+            />
+            <p>
+              <strong>Study without distractions</strong>: Our Ui is designed to
+              be fast and distraction-free.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
 
     <footer>
       <p>&copy; 2025 Recallr | All rights reserved</p>
