@@ -30,26 +30,51 @@
         margin: 0 1em;
         cursor: pointer;
       }
+
+      .container {
+        max-width: 800px;
+      }
+
+      header > .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 auto;
+      }
+
+      nav > ul {
+        list-style: none;
+        display: flex;
+        gap: 1em;
+      }
+
+      nav > ul > li > a {
+        color: white;
+        font-weight: bold;
+      }
     </style>
   </head>
+
   <body>
+
     <header>
-      <div id="logo">
-        <img
-          src="/static/svg/stack.svg"
-          alt="Stack Icon"
-          width="48"
-          height="48"
-        />
-        <h1>Recallr</h1>
+      <div class="container">
+        <div id="logo">
+          <img
+            src="/static/svg/stack.svg"
+            alt="Stack Icon"
+            width="48"
+            height="48"
+          />
+          <h1>Recallr</h1>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="/deck">Decks</a></li>
+            <li><a href="/help">Help</a></li>
+          </ul>
+        </nav>
       </div>
-      <nav>
-        <ul>
-          <!-- <li><a href="/login">Login</a></li> -->
-          <li><a href="/docs">Documentation</a></li>
-          <!-- <li><a href="/register">Register</a></li> -->
-        </ul>
-      </nav>
     </header>
 
     <footer>
