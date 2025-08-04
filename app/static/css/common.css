@@ -52,3 +52,29 @@ footer {
   justify-content: center;
   align-items: center;
 }
+
+.confirm-button {
+    background-color: #00c676;
+    color: #fff;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 0.5em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cancel-button {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 0.5em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+input[type="text"] {
+    padding: 0.5em;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0.5em;
+}
