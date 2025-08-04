@@ -1,4 +1,6 @@
 from flask import Config
+import os
+
 
 def create_app(config_class=Config):
     from flask import Flask
@@ -6,6 +8,9 @@ def create_app(config_class=Config):
                 template_folder="app/templates",
                 static_folder="app/static")
     app.config.from_object(config_class)
+
+    if not os.path.exists("app/decks"):
+        os.mkdir("app/decks")
 
 
     from .routes.main import main_bp
