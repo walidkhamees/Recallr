@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Your Decks </title>
+        <link rel="stylesheet" href="/static/css/common.css"/>
+        <link rel="stylesheet" href="/static/css/deck-style.css"/>
+    </head>
+
+    <body>
+
+        <header>
+          <div class="container">
+            <div id="logo">
+              <img
+                src="/static/svg/stack.svg"
+                alt="Stack Icon"
+                width="48"
+                height="48"
+              />
+              <h1>Recallr</h1>
+            </div>
+            <nav>
+              <ul>
+                <li><a href="/help">Help</a></li>
+              </ul>
+            </nav>
+          </div>
+        </header>
+
+        <div class="container">
+            <div class="actions">
+                <button id="new-deck-btn">Create a new deck</button>
+                <button id="delete-all-btn">Delete All Decks</button>
+            </div>
+        </div>
+
+        <main>
+                <ul>
+                    {% for deck in deck %}
+                    <li class="deck">
+                        <a href="/deck/{{ deck.id }}"> {{ deck.name }} </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+        </main>
+
+        <footer>
+          <p>&copy; 2025 Recallr | All rights reserved</p>
+        </footer>
+
+    </body>
+</html>
