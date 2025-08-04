@@ -11,22 +11,22 @@
     <body>
 
         <header>
-          <div class="container">
-            <div id="logo">
-              <img
-                src="/static/svg/stack.svg"
-                alt="Stack Icon"
-                width="48"
-                height="48"
-              />
-              <h1>Recallr</h1>
+            <div class="container">
+                <div id="logo">
+                    <img
+                    src="/static/svg/stack.svg"
+                    alt="Stack Icon"
+                    width="48"
+                    height="48"
+                    />
+                    <h1>Recallr</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/help">Help</a></li>
+                    </ul>
+                </nav>
             </div>
-            <nav>
-              <ul>
-                <li><a href="/help">Help</a></li>
-              </ul>
-            </nav>
-          </div>
         </header>
 
         <div class="container">
@@ -36,16 +36,58 @@
             </div>
         </div>
 
-        <div class="modal">
+        <div class="modal" id="delete-all-modal">
+            <div class="container">
+                <form id="delete-all-form">
+                    <h2>Delete All Decks</h2>
+                    <div class="input-group">
+                        <p>Are you sure you want to delete all decks?</p>
+                    </div>
+                    <div class="form-actions">
+                        <button
+                            type="button"
+                            id="close-delete-all-btn"
+                            class="cancel-button"
+                            >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="submit"
+                            id="sumbit-delete-all-btn"
+                            class="confirm-button"
+                            >
+                            Delete
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="modal" id="create-deck-modal">
             <div class="container">
                 <form action="/deck" method="POST">
                     <h2>Create a new deck</h2>
                     <div class="input-group">
                         <label for="name">Deck Name</label>
+                        <p class="hint">
+                            Ensure that there are no special characters
+                            in the deck name.
+                            like
+                            <code>[</code>, <code>]</code>,
+                            <code><</code>, <code>></code>,
+                            <code>/</code>, <code>?</code>,
+                            <code>\</code>, <code>,</code>,
+                            <code>:</code>, <code>*</code>,
+                            <code>SPACE</code>, <code>|</code>.
+                        </p>
                         <input
-                        type="text"
-                        name="name"
-                        placeholder="Enter a name for your deck"
+                            type="text"
+                            name="name"
+                            id="input-deck-name"
+                            placeholder="Enter a name for your deck"
                         />
                     </div>
                     <div class="form-actions">
@@ -69,18 +111,77 @@
         </div>
 
         <main>
-                <ul>
-                    {% for deck in deck %}
-                    <li class="deck">
-                        <a href="/deck/{{ deck.id }}"> {{ deck.name }} </a>
-                    </li>
-                    {% endfor %}
-                </ul>
+            <div class="container" id="decks">
+                {% for deck in decks %}
+                <div class="deck">
+                    <a href="/deck/{{ deck }}"> {{ deck }} </a>
+                </div>
+                {% endfor %}
+            </div>
         </main>
 
         <footer>
           <p>&copy; 2025 Recallr | All rights reserved</p>
         </footer>
+
+        <script>
+            // Forms
+            const deleteAllForm = document.querySelector("#delete-all-form");
+
+            // Modals
+            const createDeckModal = document.querySelector("#create-deck-modal");
+            const deleteAllModal = document.querySelector("#delete-all-modal");
+
+            // opening modal buttons
+            const createDeckBtn = document.querySelector("#new-deck-btn");
+            const deleteAllBtn = document.querySelector("#delete-all-btn");
+
+            // create deck modal buttons
+            const closeBtnCreateDeckModal = document.querySelector(
+                "#close-create-deck-btn"
+            );
+
+            // delete all modal buttons
+            const closeBtnDeleteAllModal = document.querySelector(
+                "#close-delete-all-btn"
+            );
+            const sumbitBtnDeleteAllModal = document.querySelector(
+                "#sumbit-delete-all-btn"
+            );
+
+
+            // close the modals
+            closeBtnCreateDeckModal.addEventListener("click", () => {
+                createDeckModal.style.display = "none";
+            });
+            closeBtnDeleteAllModal.addEventListener("click", () => {
+                deleteAllModal.style.display = "none";
+            });
+
+            // opens the modals
+            createDeckBtn.addEventListener("click", () => {
+                createDeckModal.style.display = "flex";
+                document.querySelector("#input-deck-name").value = "";
+            });
+            deleteAllBtn.addEventListener("click", () => {
+                deleteAllModal.style.display = "flex";
+            });
+
+
+
+            deleteAllForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const response = await fetch("/deck", {
+                    method: "DELETE",
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                    return;
+                }
+            });
+
+        </script>
 
     </body>
 </html>
