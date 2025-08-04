@@ -11,6 +11,9 @@ def create_app(config_class=Config):
     from .routes.main import main_bp
     app.register_blueprint(main_bp)
 
+    from .routes.deck import deck_bp
+    app.register_blueprint(deck_bp)
+
     from .routes.card import card_bp
     app.register_blueprint(card_bp)
 
