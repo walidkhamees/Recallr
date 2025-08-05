@@ -37,9 +37,6 @@ def get_deck(deck_name):
     }
     cards, message = get_all_cards(deck_name)
 
-    # print("message: ", message)
-    # print("deck: ", deck)
-
     if message != "":
         return deck, message
 
@@ -48,6 +45,9 @@ def get_deck(deck_name):
 
     for card in cards:
         card_splited = card.split(constants.CARD_SEPRATOR)
+
+        if len(card_splited) < 5:
+            continue
 
         card_id = card_splited[0]
         card = {

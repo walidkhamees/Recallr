@@ -1,187 +1,194 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title> Your Decks </title>
-        <link rel="stylesheet" href="/static/css/common.css"/>
-        <link rel="stylesheet" href="/static/css/deck-style.css"/>
-    </head>
-
-    <body>
-
-        <header>
-            <div class="container">
-                <div id="logo">
-                    <img
-                    src="/static/svg/stack.svg"
-                    alt="Stack Icon"
-                    width="48"
-                    height="48"
-                    />
-                    <h1>Recallr</h1>
-                </div>
-                <nav>
-                    <ul>
-                        <li><a href="/help">Help</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-
-        <div class="container">
-            <div class="actions">
-                <button id="new-deck-btn">Create a new deck</button>
-                <button id="delete-all-btn">Delete All Decks</button>
-            </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ deck.name }}</title>
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/deck-style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div id="logo">
+          <img
+            src="/static/svg/stack.svg"
+            alt="Stack Icon"
+            width="48"
+            height="48"
+          />
+          <h1>Recallr</h1>
         </div>
+        <nav>
+          <ul>
+            <li><a href="/help">Help</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
 
-        <div class="modal" id="delete-all-modal">
-            <div class="container">
-                <form id="delete-all-form">
-                    <h2>Delete All Decks</h2>
-                    <div class="input-group">
-                        <p>Are you sure you want to delete all decks?</p>
-                    </div>
-                    <div class="form-actions">
-                        <button
-                            type="button"
-                            id="close-delete-all-btn"
-                            class="cancel-button"
-                            >
-                            Cancel
-                        </button>
+    <div class="modal" id="create-card-modal">
+      <div class="container">
+        <form
+          id="create-card-form"
+          action="/deck/{{ deck.name }}/card"
+          method="POST"
+        >
+          <h2>Create a new card</h2>
+          <div class="input-group">
+            <label for="name">Question</label>
+            <input
+              type="text"
+              name="question"
+              id="question-input"
+              placeholder="Enter a question for your card"
+            />
+          </div>
+          <div class="input-group">
+            <label for="name">Answer</label>
+            <input
+              type="text"
+              name="answer"
+              id="answer-input"
+              placeholder="Enter an answer for your card"
+            />
+          </div>
+          <div class="form-actions">
+            <button
+              type="button"
+              id="close-create-card-btn"
+              class="cancel-button"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              id="sumbit-create-deck-btn"
+              class="confirm-button"
+            >
+              Create
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-                        <button
-                            type="submit"
-                            id="sumbit-delete-all-btn"
-                            class="confirm-button"
-                            >
-                            Delete
-                        </button>
+    <div class="modal" id="delete-all-modal">
+      <div class="container">
+        <form id="delete-all-form">
+          <h2>Delete All Cards in {{ deck.name }}</h2>
+          <div class="input-group">
+            <p>Are you sure you want to delete all cards in {{ deck.name }}?</p>
+          </div>
+          <div class="form-actions">
+            <button
+              type="button"
+              id="close-delete-all-btn"
+              class="cancel-button"
+            >
+              Cancel
+            </button>
 
-                    </div>
-                </form>
-            </div>
+            <button
+              type="submit"
+              id="sumbit-delete-all-btn"
+              class="confirm-button"
+            >
+              Delete
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <main>
+      <div class="container">
+        <div class="deck-header">
+          <div class="deck-header-title">
+            <a href="/deck">
+              <img src="/static/svg/back.svg" width="18" height="18" alt="" />
+            </a>
+            <h2>{{ deck.name }}</h2>
+          </div>
+
+          <div class="actions">
+            <button id="open-new-card-modal">Create Card</button>
+            <button id="open-delete-all-modal">Delete All Cards</button>
+          </div>
         </div>
+      </div>
 
-
-        <div class="modal" id="create-deck-modal">
-            <div class="container">
-                <form action="/deck" method="POST">
-                    <h2>Create a new deck</h2>
-                    <div class="input-group">
-                        <label for="name">Deck Name</label>
-                        <p class="hint">
-                            Ensure that there are no special characters
-                            in the deck name.
-                            like
-                            <code>[</code>, <code>]</code>,
-                            <code><</code>, <code>></code>,
-                            <code>/</code>, <code>?</code>,
-                            <code>\</code>, <code>,</code>,
-                            <code>:</code>, <code>*</code>,
-                            <code>SPACE</code>, <code>|</code>.
-                        </p>
-                        <input
-                            type="text"
-                            name="name"
-                            id="input-deck-name"
-                            placeholder="Enter a name for your deck"
-                        />
-                    </div>
-                    <div class="form-actions">
-                        <button
-                            type="button"
-                            id="close-create-deck-btn"
-                            class="cancel-button"
-                        >
-                        Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            id="sumbit-create-deck-btn"
-                            class="confirm-button"
-                        >
-                        Create
-                        </button>
-                    </div>
-                </form>
-            </div>
+      <div class="cards">
+        {% for card_id, card in deck.cards.items() %}
+        <div class="card" data-card-id="{{ card_id }}" data-flipped="false">
+          <div class="question">
+            <h3>{{ card.question }}</h3>
+          </div>
+          <div class="answer">
+            <h3>{{ card.answer }}</h3>
+          </div>
         </div>
+        {% endfor %}
+      </div>
+    </main>
 
-        <main>
-            <div class="container" id="decks">
-                {% for deck in decks %}
-                <div class="deck">
-                    <a href="/deck/{{ deck }}"> {{ deck }} </a>
-                </div>
-                {% endfor %}
-            </div>
-        </main>
+    <footer>
+      <p>&copy; 2025 Recallr | All rights reserved</p>
+    </footer>
 
-        <footer>
-          <p>&copy; 2025 Recallr | All rights reserved</p>
-        </footer>
+    <script>
+      // Modals
+      const createCardModal = document.querySelector("#create-card-modal");
+      const deleteAllModal = document.querySelector("#delete-all-modal");
 
-        <script>
-            // Forms
-            const deleteAllForm = document.querySelector("#delete-all-form");
+      // open modal buttons
+      const openNewCardModalBtn = document.querySelector(
+        "#open-new-card-modal",
+      );
+      const openDeleteAllModalBtn = document.querySelector(
+        "#open-delete-all-modal",
+      );
 
-            // Modals
-            const createDeckModal = document.querySelector("#create-deck-modal");
-            const deleteAllModal = document.querySelector("#delete-all-modal");
+      // open modals
+      openNewCardModalBtn.addEventListener("click", () => {
+        createCardModal.style.display = "flex";
+      });
 
-            // opening modal buttons
-            const createDeckBtn = document.querySelector("#new-deck-btn");
-            const deleteAllBtn = document.querySelector("#delete-all-btn");
+      openDeleteAllModalBtn.addEventListener("click", () => {
+        deleteAllModal.style.display = "flex";
+      });
 
-            // create deck modal buttons
-            const closeBtnCreateDeckModal = document.querySelector(
-                "#close-create-deck-btn"
-            );
+      // create card form
+      const createCardForm = document.querySelector("#create-card-form");
+      const closeCreateCardBtn = document.querySelector(
+        "#close-create-card-btn",
+      );
 
-            // delete all modal buttons
-            const closeBtnDeleteAllModal = document.querySelector(
-                "#close-delete-all-btn"
-            );
-            const sumbitBtnDeleteAllModal = document.querySelector(
-                "#sumbit-delete-all-btn"
-            );
+      // delete all modal form
+      const deleteAllForm = document.querySelector("#delete-all-form");
+      const closeDeleteAllBtn = document.querySelector("#close-delete-all-btn");
 
+      closeDeleteAllBtn.addEventListener("click", () => {
+        deleteAllModal.style.display = "none";
+      });
 
-            // close the modals
-            closeBtnCreateDeckModal.addEventListener("click", () => {
-                createDeckModal.style.display = "none";
-            });
-            closeBtnDeleteAllModal.addEventListener("click", () => {
-                deleteAllModal.style.display = "none";
-            });
+      closeCreateCardBtn.addEventListener("click", () => {
+        createCardModal.style.display = "none";
+      });
 
-            // opens the modals
-            createDeckBtn.addEventListener("click", () => {
-                createDeckModal.style.display = "flex";
-                document.querySelector("#input-deck-name").value = "";
-            });
-            deleteAllBtn.addEventListener("click", () => {
-                deleteAllModal.style.display = "flex";
-            });
+      // all cards
+      const cards = document.querySelectorAll(".card");
 
-
-
-            deleteAllForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const response = await fetch("/deck", {
-                    method: "DELETE",
-                });
-
-                if (response.ok) {
-                    window.location.reload();
-                    return;
-                }
-            });
-
-        </script>
-
-    </body>
+      cards.forEach((card) => {
+        card.addEventListener("click", () => {
+          const fliped = card.getAttribute("data-flipped");
+          if (fliped === "true") {
+            card.setAttribute("data-flipped", "false");
+            card.querySelector(".answer").style.display = "none";
+            card.querySelector(".question").style.display = "block";
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
