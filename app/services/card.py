@@ -40,6 +40,26 @@ def write_all_cards(deck, cards):
 
     return ""
 
+def delete_card(deck, card_id):
+    cards, message = get_all_cards(deck)
+
+    if message != "":
+        return message
+
+    cards_dict = _get_cards_as_dict(cards)
+
+    if card_id not in cards_dict:
+        return "Error: Card not found"
+
+    cards_dict.pop(card_id)
+    write_all_cards(deck, cards_dict)
+
+    return ""
+
+
+
+
+
 
 def get_all_cards(deck):
     cards = []
@@ -64,7 +84,12 @@ def create_card(deck, question, answer):
         return message
 
     cards_dict = _get_cards_as_dict(cards)
-    card_id = str(len(cards_dict) + 1)
+
+    card_id = str(len(cards_dict) + 1) 
+
+    while card_id in cards_dict:
+        card_id = str(int(card_id) + 1)
+
 
     cards_dict[card_id] = {
         "question": question,
@@ -72,5 +97,6 @@ def create_card(deck, question, answer):
         "last_answered": int(time.time()), # Gets the current epoch time
         "correct": False,
     }
+
     write_all_cards(deck, cards_dict)
     return ""

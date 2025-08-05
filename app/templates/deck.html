@@ -122,7 +122,7 @@
       <div class="container">
         <div class="cards">
           {% for card_id, card in deck.cards.items() %}
-          <div class="card-container">
+          <div class="card-container" data-card-id="{{ card_id }}">
             <div class="card-actions">
               <button class="card-btn edit-card">
                 <img
@@ -132,7 +132,7 @@
                   height="18"
                 />
               </button>
-              <button class="card-btn delete-card">
+              <button class="card-btn delete-card" data-card-id="{{ card_id }}">
                 <img
                   src="/static/svg/trash.svg"
                   alt="trash icon"
@@ -141,7 +141,7 @@
                 />
               </button>
             </div>
-            <div class="card" data-card-id="{{ card_id }}" data-flipped="false">
+            <div class="card" data-flipped="false">
               <div class="question">
                 <h3>{{ card.question }}</h3>
               </div>
@@ -170,6 +170,24 @@
             return false;
         }
       }
+
+      async function handleDeleteCardBtn(e) {
+          const url = window.location.href;
+          const cardId = e.target.parentElement.getAttribute("data-card-id");
+          const card =  e.target.parentElement.parentElement.parentElement;
+          if (!cardId) {
+              return;
+          }
+
+          const response = await fetch(`${url}/card/${cardId}`, {
+              method: "DELETE",
+          });
+
+          if (response.ok) {
+              card.remove();
+          }
+      }
+
 
       // Modals
       const createCardModal = document.querySelector("#create-card-modal");
@@ -212,9 +230,13 @@
 
       // all cards
       const cards = document.querySelectorAll(".card");
+      const deleteCardBtns = document.querySelectorAll(".card-btn.delete-card");
+
+      deleteCardBtns.forEach((deleteCardBtn) => {
+        deleteCardBtn.addEventListener("click", handleDeleteCardBtn);
+      });
 
       cards.forEach((card) => {
-        console.log(card);
 
         card.addEventListener("click", () => {
           const flipped = convertStringToBoolean(
@@ -232,6 +254,7 @@
           }
         });
       });
+
     </script>
   </body>
 </html>

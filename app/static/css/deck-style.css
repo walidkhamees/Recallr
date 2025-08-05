@@ -87,7 +87,8 @@ main > .container > h2 {
     justify-content: center;
     cursor: pointer;
     gap: 0.5em;
-    flex: 1
+    flex: 1;
+    min-width: 45%;
 }
 
 .card-btn {
