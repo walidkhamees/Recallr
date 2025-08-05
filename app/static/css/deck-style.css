@@ -70,3 +70,29 @@ main > .container > h2 {
   background-color: #ff6b6b;
   color: #fff;
 }
+
+.cards {
+  margin-top: 1em;
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 1em;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5em;
+}
+
+.card .answer {
+    display: none;
+}
+

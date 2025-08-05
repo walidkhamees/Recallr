@@ -118,17 +118,19 @@
         </div>
       </div>
 
-      <div class="cards">
-        {% for card_id, card in deck.cards.items() %}
-        <div class="card" data-card-id="{{ card_id }}" data-flipped="false">
-          <div class="question">
-            <h3>{{ card.question }}</h3>
+      <div class="container">
+        <div class="cards">
+          {% for card_id, card in deck.cards.items() %}
+          <div class="card" data-card-id="{{ card_id }}" data-flipped="false">
+            <div class="question">
+              <h3>{{ card.question }}</h3>
+            </div>
+            <div class="answer">
+              <h3>{{ card.answer }}</h3>
+            </div>
           </div>
-          <div class="answer">
-            <h3>{{ card.answer }}</h3>
-          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
     </main>
 
@@ -137,6 +139,17 @@
     </footer>
 
     <script>
+      function convertStringToBoolean(booleanString) {
+        switch (booleanString.toLowerCase()) {
+          case "true":
+            return true;
+          case "false":
+            return false;
+          default:
+            return false;
+        }
+      }
+
       // Modals
       const createCardModal = document.querySelector("#create-card-modal");
       const deleteAllModal = document.querySelector("#delete-all-modal");
@@ -180,12 +193,23 @@
       const cards = document.querySelectorAll(".card");
 
       cards.forEach((card) => {
+        console.log(card);
+
         card.addEventListener("click", () => {
-          const fliped = card.getAttribute("data-flipped");
-          if (fliped === "true") {
+          const flipped = convertStringToBoolean(
+            card.getAttribute("data-flipped"),
+          );
+
+          console.log(flipped);
+
+          if (flipped) {
             card.setAttribute("data-flipped", "false");
             card.querySelector(".answer").style.display = "none";
             card.querySelector(".question").style.display = "block";
+          } else {
+            card.setAttribute("data-flipped", "true");
+            card.querySelector(".answer").style.display = "block";
+            card.querySelector(".question").style.display = "none";
           }
         });
       });
