@@ -1,9 +1,12 @@
 import os
 import re
 
+from app.services.card import get_all_cards
+from app.utils import constants
+
 def get_decks():
     decks = []
-    for file in os.listdir("app/decks"):
+    for file in os.listdir(constants.DECK_PATH):
         decks.append(file.replace(".txt", ""))
     return decks
 
@@ -12,18 +15,18 @@ def create_deck(deck_name):
     all_decks = get_decks()
 
     if cleaned_deck_name != deck_name:
-        return "Deck name cannot contain special characters", False
+        return "Deck name cannot contain special characters"
 
     if deck_name == "":
-        return "Deck name cannot be empty", False
+        return "Deck name cannot be empty"
 
     if deck_name in all_decks:
-        return f"Deck {deck_name} already exists", False
+        return f"Deck {deck_name} already exists"
 
-    deck_file = open(f"app/decks/{deck_name}.txt", "w")
+    deck_file = open(f"{constants.DECK_PATH}/{deck_name}.txt", "w")
     deck_file.close()
 
-    return f"Deck {deck_name} created successfully", True
+    return ""
 
 def get_deck(deck_name):
     deck = {
@@ -32,11 +35,19 @@ def get_deck(deck_name):
 
         }
     }
-    deck_file = open(f"app/decks/{deck_name}.txt", "r")
-    cards = deck_file.read().split("\n")
-    deck_file.close()
+    cards, message = get_all_cards(deck_name)
+
+    # print("message: ", message)
+    # print("deck: ", deck)
+
+    if message != "":
+        return deck, message
+
+    if len(cards) == 0:
+        return deck, message
+
     for card in cards:
-        card_splited = card.split("`")
+        card_splited = card.split(constants.CARD_SEPRATOR)
 
         card_id = card_splited[0]
         card = {
@@ -47,8 +58,8 @@ def get_deck(deck_name):
         }
         deck["cards"][card_id] = card
 
-    return deck
+    return deck, message
 
 def delete_all_decks():
-    for file in os.listdir("app/decks"):
-        os.remove(f"app/decks/{file}")
+    for file in os.listdir(constants.DECK_PATH):
+        os.remove(f"{constants.DECK_PATH}/{file}")
