@@ -9,16 +9,21 @@ def get_decks():
 
 def create_deck(deck_name):
     cleaned_deck_name = re.sub(r"[[<>/?\\,:*| ]", "", deck_name)
+    all_decks = get_decks()
 
     if cleaned_deck_name != deck_name:
-        return "Deck name cannot contain special characters"
+        return "Deck name cannot contain special characters", False
 
     if deck_name == "":
-        return "Deck name cannot be empty"
+        return "Deck name cannot be empty", False
+
+    if deck_name in all_decks:
+        return f"Deck {deck_name} already exists", False
 
     deck_file = open(f"app/decks/{deck_name}.txt", "w")
     deck_file.close()
-    return f"Deck {deck_name} created successfully"
+
+    return f"Deck {deck_name} created successfully", True
 
 def get_deck(deck_name):
     deck = {
