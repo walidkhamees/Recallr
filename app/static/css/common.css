@@ -14,12 +14,13 @@ header h1 {
 }
 
 #logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
-  width: fit-content;
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    width: fit-content;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .container {

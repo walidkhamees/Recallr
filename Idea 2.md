@@ -1,5 +1,17 @@
 Idea: Make a flashcards app.
 
+# TODO
+
+- [x] make the logo point to /
+- [ ] make the deck header uniform across all pages
+
+- [ ] implement quiz feature
+- [ ] implement card update feature
+
+- [ ] implement deck update feature
+- [ ] implement deck delete feature
+
+- [ ] implement authentication with Sessions
 
 # Some Missing Features
 
@@ -34,6 +46,7 @@ got the answer wrong.
 # Frontend
 
 - The user can create a new deck.
+- CRUD (create, read, update, delete) Decks.
 - In each deck the user can CRUD (create, read, update, delete) cards.
 - The user can start a quiz.
     1. 10 cards are randomly selected from the deck.
