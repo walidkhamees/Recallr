@@ -172,22 +172,21 @@
       }
 
       async function handleDeleteCardBtn(e) {
-          const url = window.location.href;
-          const cardId = e.target.parentElement.getAttribute("data-card-id");
-          const card =  e.target.parentElement.parentElement.parentElement;
-          if (!cardId) {
-              return;
-          }
+        const url = window.location.href;
+        const cardId = e.target.parentElement.getAttribute("data-card-id");
+        const card = e.target.parentElement.parentElement.parentElement;
+        if (!cardId) {
+          return;
+        }
 
-          const response = await fetch(`${url}/card/${cardId}`, {
-              method: "DELETE",
-          });
+        const response = await fetch(`${url}/card/${cardId}`, {
+          method: "DELETE",
+        });
 
-          if (response.ok) {
-              card.remove();
-          }
+        if (response.ok) {
+          card.remove();
+        }
       }
-
 
       // Modals
       const createCardModal = document.querySelector("#create-card-modal");
@@ -237,7 +236,6 @@
       });
 
       cards.forEach((card) => {
-
         card.addEventListener("click", () => {
           const flipped = convertStringToBoolean(
             card.getAttribute("data-flipped"),
@@ -254,7 +252,6 @@
           }
         });
       });
-
     </script>
   </body>
 </html>

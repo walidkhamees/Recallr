@@ -8,25 +8,9 @@ main {
     flex: 1;
 }
 
-.actions {
-    display: flex;
-    padding: 1.5em;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 0.5em;
-}
-
 .container {
     margin: auto;
     width: 100%;
-}
-
-.actions button {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 0.5em 1em;
-    border-radius: 0.5em;
-    font-weight: bold;
-    cursor: pointer;
 }
 
 #new-deck-btn {

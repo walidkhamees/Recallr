@@ -14,51 +14,15 @@ main {
 }
 
 main .container {
-  margin: auto;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 main > .container > h2 {
   padding: 0.5em 1em;
   font-size: 2em;
-}
-
-.deck-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1em;
-  padding: 1em;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.deck-header .deck-header-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
-}
-
-.deck-header .deck-header-title > a {
-  text-decoration: none;
-  color: black;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-.deck-header .actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  width: fit-content;
-}
-
-.deck-header button {
-  padding: 0.5em 1em;
-  border-radius: 0.5em;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  cursor: pointer;
 }
 
 #open-new-card-modal {

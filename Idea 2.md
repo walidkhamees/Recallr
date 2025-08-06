@@ -3,7 +3,7 @@ Idea: Make a flashcards app.
 # TODO
 
 - [x] make the logo point to /
-- [ ] make the deck header uniform across all pages
+- [x] make the deck header uniform across all pages
 
 - [ ] implement quiz feature
 - [ ] implement card update feature
