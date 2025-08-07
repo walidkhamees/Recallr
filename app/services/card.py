@@ -31,9 +31,9 @@ def _create_line_from_card_dict(card_id, card_dict):
     return line
 
 
-def write_all_cards(deck, cards):
+def _write_all_cards(deck, cards_dict):
     deck_file = open(f"{constants.DECK_PATH}/{deck}.txt", "w")
-    for card_id, card_dict in cards.items():
+    for card_id, card_dict in cards_dict.items():
         line = _create_line_from_card_dict(card_id, card_dict)
         deck_file.write(line + "\n")
     deck_file.close()
@@ -52,7 +52,7 @@ def delete_card(deck, card_id):
         return "Error: Card not found"
 
     cards_dict.pop(card_id)
-    write_all_cards(deck, cards_dict)
+    _write_all_cards(deck, cards_dict)
 
     return ""
 
@@ -85,7 +85,7 @@ def create_card(deck, question, answer):
 
     cards_dict = _get_cards_as_dict(cards)
 
-    card_id = str(len(cards_dict) + 1) 
+    card_id = str(len(cards_dict) + 1)
 
     while card_id in cards_dict:
         card_id = str(int(card_id) + 1)
@@ -98,5 +98,25 @@ def create_card(deck, question, answer):
         "correct": False,
     }
 
-    write_all_cards(deck, cards_dict)
+    _write_all_cards(deck, cards_dict)
     return ""
+
+def update_card(deck, card_id, new_question, new_answer):
+    cards, message = get_all_cards(deck)
+    cards_dict = _get_cards_as_dict(cards)
+
+    if not card_id in cards_dict:
+        return "This card doesn't exist"
+
+    if new_question == "":
+        return "Question cannot be empty"
+
+    if new_answer == "":
+        return "Answer cannot be empty"
+
+    cards_dict[card_id]["question"] = new_question
+    cards_dict[card_id]["answer"] = new_answer
+
+    _write_all_cards(deck, cards_dict)
+
+    return message

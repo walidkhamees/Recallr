@@ -1,1 +1,1 @@
-from .main import main_bp
+from .routes import *

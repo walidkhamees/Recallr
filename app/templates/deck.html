@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/static/css/common.css" />
     <link rel="stylesheet" href="/static/css/deck-style.css" />
   </head>
+
   <body>
     <header>
       <div class="container">
@@ -27,6 +28,52 @@
         </nav>
       </div>
     </header>
+
+    <div class="modal" id="update-card-modal">
+      <div class="container">
+        <form
+          id="update-card-form"
+          action="/deck/{{ deck.name }}/card"
+          method="POST"
+        >
+          <h2>Update card</h2>
+          <div class="input-group">
+            <label for="name">Question</label>
+            <input
+              type="text"
+              name="question"
+              id="question-update-input"
+              placeholder="Enter a question for your card"
+            />
+          </div>
+          <div class="input-group">
+            <label for="name">Answer</label>
+            <input
+              type="text"
+              name="answer"
+              id="answer-update-input"
+              placeholder="Enter an answer for your card"
+            />
+          </div>
+          <div class="form-actions">
+            <button
+              type="button"
+              id="close-update-card-btn"
+              class="cancel-button"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              id="sumbit-update-deck-btn"
+              class="confirm-button"
+            >
+              Update
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <div class="modal" id="create-card-modal">
       <div class="container">
@@ -122,7 +169,12 @@
       <div class="container">
         <div class="cards">
           {% for card_id, card in deck.cards.items() %}
-          <div class="card-container" data-card-id="{{ card_id }}">
+          <div
+            class="card-container"
+            data-card-id="{{ card_id }}"
+            data-card-question="{{ card.question}}"
+            data-card-answer="{{ card.answer }}"
+          >
             <div class="card-actions">
               <button class="card-btn edit-card">
                 <img
@@ -132,7 +184,7 @@
                   height="18"
                 />
               </button>
-              <button class="card-btn delete-card" data-card-id="{{ card_id }}">
+              <button class="card-btn delete-card">
                 <img
                   src="/static/svg/trash.svg"
                   alt="trash icon"
@@ -160,37 +212,12 @@
     </footer>
 
     <script>
-      function convertStringToBoolean(booleanString) {
-        switch (booleanString.toLowerCase()) {
-          case "true":
-            return true;
-          case "false":
-            return false;
-          default:
-            return false;
-        }
-      }
-
-      async function handleDeleteCardBtn(e) {
-        const url = window.location.href;
-        const cardId = e.target.parentElement.getAttribute("data-card-id");
-        const card = e.target.parentElement.parentElement.parentElement;
-        if (!cardId) {
-          return;
-        }
-
-        const response = await fetch(`${url}/card/${cardId}`, {
-          method: "DELETE",
-        });
-
-        if (response.ok) {
-          card.remove();
-        }
-      }
+      let currentCard = {};
 
       // Modals
       const createCardModal = document.querySelector("#create-card-modal");
       const deleteAllModal = document.querySelector("#delete-all-modal");
+      const updateCardModal = document.querySelector("#update-card-modal");
 
       // open modal buttons
       const openNewCardModalBtn = document.querySelector(
@@ -199,15 +226,6 @@
       const openDeleteAllModalBtn = document.querySelector(
         "#open-delete-all-modal",
       );
-
-      // open modals
-      openNewCardModalBtn.addEventListener("click", () => {
-        createCardModal.style.display = "flex";
-      });
-
-      openDeleteAllModalBtn.addEventListener("click", () => {
-        deleteAllModal.style.display = "flex";
-      });
 
       // create card form
       const createCardForm = document.querySelector("#create-card-form");
@@ -219,6 +237,99 @@
       const deleteAllForm = document.querySelector("#delete-all-form");
       const closeDeleteAllBtn = document.querySelector("#close-delete-all-btn");
 
+      // update card modal form
+      const updateCardForm = document.querySelector("#update-card-form");
+      const closeUpdateCardBtn = document.querySelector(
+        "#close-update-card-btn",
+      );
+
+      // all cards
+      const cards = document.querySelectorAll(".card");
+      const deleteCardBtns = document.querySelectorAll(".card-btn.delete-card");
+      const updateCardBtns = document.querySelectorAll(".card-btn.edit-card");
+
+      function convertStringToBoolean(booleanString) {
+        switch (booleanString.toLowerCase()) {
+          case "true":
+            return true;
+          case "false":
+            return false;
+          default:
+            return false;
+        }
+      }
+
+      function handleFlipCard(e) {
+        const card = e.currentTarget;
+
+        const flipped = convertStringToBoolean(
+          card.getAttribute("data-flipped"),
+        );
+
+        if (flipped) {
+          card.setAttribute("data-flipped", "false");
+          card.querySelector(".answer").style.display = "none";
+          card.querySelector(".question").style.display = "block";
+        } else {
+          card.setAttribute("data-flipped", "true");
+          card.querySelector(".answer").style.display = "block";
+          card.querySelector(".question").style.display = "none";
+        }
+      }
+
+      async function handleDeleteCardBtn(e) {
+        const currentPath = window.location.href;
+        const card = e.target.parentElement.parentElement.parentElement;
+        const cardId = card.getAttribute("data-card-id");
+        if (!cardId) {
+          return;
+        }
+
+        const response = await fetch(`${currentPath}/card/${cardId}`, {
+          method: "DELETE",
+        });
+
+        if (response.ok) {
+          card.remove();
+        }
+      }
+
+      function handleUpdateCard(e) {
+        const card = e.currentTarget.parentElement.parentElement;
+        const cardId = card.getAttribute("data-card-id");
+        const question = card.getAttribute("data-card-question");
+        const answer = card.getAttribute("data-card-answer");
+
+        const questionInput = updateCardForm.querySelector(
+          "#question-update-input",
+        );
+        const answerInput = updateCardForm.querySelector(
+          "#answer-update-input",
+        );
+
+        questionInput.placeholder = question;
+        questionInput.value = question;
+
+        answerInput.placeholder = answer;
+        answerInput.value = answer;
+
+        currentCard = {
+          "card_id": cardId,
+          question,
+          answer,
+        };
+        updateCardModal.style.display = "flex";
+      }
+
+      // open modals
+      openNewCardModalBtn.addEventListener("click", () => {
+        createCardModal.style.display = "flex";
+      });
+
+      openDeleteAllModalBtn.addEventListener("click", () => {
+        deleteAllModal.style.display = "flex";
+      });
+
       closeDeleteAllBtn.addEventListener("click", () => {
         deleteAllModal.style.display = "none";
       });
@@ -227,31 +338,59 @@
         createCardModal.style.display = "none";
       });
 
-      // all cards
-      const cards = document.querySelectorAll(".card");
-      const deleteCardBtns = document.querySelectorAll(".card-btn.delete-card");
+      closeUpdateCardBtn.addEventListener("click", () => {
+        updateCardModal.style.display = "none";
+      });
+
+      updateCardForm.addEventListener("submit", async (e) => {
+        e.preventDefault(); // prevent submitting the form
+        const currentPath = window.location.href;
+
+        const questionInput = updateCardForm.querySelector(
+          "#question-update-input",
+        );
+        const answerInput = updateCardForm.querySelector(
+          "#answer-update-input",
+        );
+
+        currentCard.question = questionInput.value;
+        currentCard.answer = answerInput.value;
+
+        // validation
+        if (currentCard.question === "") {
+          // TODO: Add an indication that there must be a question
+          return;
+        }
+        if (currentCard.answer === "") {
+          // TODO: Add an indication that there must be a answer
+          return;
+        }
+
+        const response = await fetch(`${currentPath}/card`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(currentCard),
+        });
+
+        if (response.ok) {
+          updateCardModal.style.display = "none";
+        }
+      });
+
+      updateCardBtns.forEach((editCardBtn) => {
+        editCardBtn.addEventListener("click", handleUpdateCard);
+      });
 
       deleteCardBtns.forEach((deleteCardBtn) => {
         deleteCardBtn.addEventListener("click", handleDeleteCardBtn);
       });
 
       cards.forEach((card) => {
-        card.addEventListener("click", () => {
-          const flipped = convertStringToBoolean(
-            card.getAttribute("data-flipped"),
-          );
-
-          if (flipped) {
-            card.setAttribute("data-flipped", "false");
-            card.querySelector(".answer").style.display = "none";
-            card.querySelector(".question").style.display = "block";
-          } else {
-            card.setAttribute("data-flipped", "true");
-            card.querySelector(".answer").style.display = "block";
-            card.querySelector(".question").style.display = "none";
-          }
-        });
+        card.addEventListener("click", handleFlipCard);
       });
     </script>
   </body>
 </html>
+
