@@ -170,10 +170,10 @@ input[type="text"] {
   width: fit-content;
 }
 
-.actions button {
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 0.5em 1em;
-  border-radius: 0.5em;
-  font-weight: bold;
-  cursor: pointer;
+.btn {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.5em 1em;
+    border-radius: 0.5em;
+    font-weight: bold;
+    cursor: pointer;
 }

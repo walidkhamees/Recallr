@@ -160,8 +160,11 @@
           </div>
 
           <div class="actions">
-            <button id="open-new-card-modal">Create Card</button>
-            <button id="open-delete-all-modal">Delete All Cards</button>
+            <button class="btn" id="open-new-card-modal">Create Card</button>
+            <button class="btn" id="open-delete-all-modal">Delete All Cards</button>
+            <a href="{{ deck.name }}/quiz" id="start-quiz" class="btn">
+              Start Quiz
+            </a>
           </div>
         </div>
       </div>
@@ -314,7 +317,7 @@
         answerInput.value = answer;
 
         currentCard = {
-          "card_id": cardId,
+          card_id: cardId,
           question,
           answer,
         };
