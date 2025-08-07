@@ -30,9 +30,6 @@ def get_deck_route(deck_name):
     # Handle the case where the deck doesn't exist
     deck, message = get_deck(deck_name)
 
-    print("message: ", message)
-    print("deck: ", deck)
-
     if message == "":
         return render_template("deck.html", deck=deck)
 
