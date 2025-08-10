@@ -161,7 +161,9 @@
 
           <div class="actions">
             <button class="btn" id="open-new-card-modal">Create Card</button>
-            <button class="btn" id="open-delete-all-modal">Delete All Cards</button>
+            <button class="btn" id="open-delete-all-modal">
+              Delete All Cards
+            </button>
             <a href="{{ deck.name }}/quiz" id="start-quiz" class="btn">
               Start Quiz
             </a>
@@ -345,6 +347,20 @@
         updateCardModal.style.display = "none";
       });
 
+      deleteAllForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const currentPath = window.location.href;
+
+        const response = await fetch(`${currentPath}/card`,{
+          method: "DELETE",
+        });
+
+        if (response.ok) {
+          window.location.reload();
+          return;
+        }
+      });
+
       updateCardForm.addEventListener("submit", async (e) => {
         e.preventDefault(); // prevent submitting the form
         const currentPath = window.location.href;
@@ -379,6 +395,8 @@
 
         if (response.ok) {
           updateCardModal.style.display = "none";
+          window.location.reload(); // TODO: No need to reload the page
+          // just update the card
         }
       });
 
@@ -396,4 +414,3 @@
     </script>
   </body>
 </html>
-

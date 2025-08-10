@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify, request, redirect
-from app.services.card import create_card, delete_card, update_card
+from flask import Blueprint, redirect, request
+from app.services.card import create_card, delete_all_cards, delete_card, update_card
 import app.utils.http_codes as HTTP_CODES
 
 card_bp = Blueprint("card_bp", __name__, url_prefix="/deck/<deck>/card")
@@ -28,8 +28,17 @@ def delete_card_route(deck, card_id):
 
     return redirect(f"/deck/{deck}", code=HTTP_CODES.DELETED)
 
+@card_bp.route("/", methods=["DELETE"])
+def delete_all_cards_route(deck):
+    message = delete_all_cards(deck)
 
-@card_bp.route("", methods=["PUT"])
+    if message != "":
+        return message
+
+    return redirect(f"/deck/{deck}", code=HTTP_CODES.DELETED)
+
+
+@card_bp.route("/", methods=["PUT"])
 def update_card_route(deck):
     data = request.get_json()
 
@@ -42,5 +51,5 @@ def update_card_route(deck):
     if not message == "":
         return message
 
-    return "card updated successfuly "
+    return "card updated successfuly"
 

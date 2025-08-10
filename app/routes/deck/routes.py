@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, redirect
 
-from app.services.deck import create_deck, delete_all_decks, get_deck, get_decks, delete_all_decks
+from app.services.deck import create_deck, delete_all_decks, get_deck, get_decks
+
+# from app.services.deck import create_deck, delete_all_decks, get_deck, get_decks, delete_all_decks
 
 deck_bp = Blueprint("deck_bp", __name__, url_prefix="/deck")
 
@@ -17,7 +19,7 @@ def create_deck_route():
     if message != "":
         return message
 
-    return message
+    return redirect(f"/deck")
 
 
 @deck_bp.route("/", methods=["DELETE"])

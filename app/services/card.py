@@ -1,122 +1,104 @@
 import time
-from app.utils import constants
-
-def _get_cards_as_dict(cards):
-    cards_dict = {}
-
-    for card in cards:
-        card_splited = card.split(constants.CARD_SEPRATOR)
-
-        if len(card_splited) < 5:
-            continue
-
-        card_id = card_splited[0]
-        cards_dict[card_id] = {}
-        cards_dict[card_id]["question"] = card_splited[1]
-        cards_dict[card_id]["answer"] = card_splited[2]
-        cards_dict[card_id]["last_answered"] = card_splited[3]
-        cards_dict[card_id]["correct"] = card_splited[4]
-
-    return cards_dict
-
-
-def _create_line_from_card_dict(card_id, card_dict):
-    line = f"{card_id}{constants.CARD_SEPRATOR}"
-    line += f"{constants.CARD_SEPRATOR}".join([
-        card_dict["question"],
-        card_dict["answer"],
-        str(card_dict["last_answered"]),
-        str(card_dict["correct"]),
-    ])
-    return line
-
-
-def _write_all_cards(deck, cards_dict):
-    deck_file = open(f"{constants.DECK_PATH}/{deck}.txt", "w")
-    for card_id, card_dict in cards_dict.items():
-        line = _create_line_from_card_dict(card_id, card_dict)
-        deck_file.write(line + "\n")
-    deck_file.close()
-
-    return ""
-
-def delete_card(deck, card_id):
-    cards, message = get_all_cards(deck)
-
-    if message != "":
-        return message
-
-    cards_dict = _get_cards_as_dict(cards)
-
-    if card_id not in cards_dict:
-        return "Error: Card not found"
-
-    cards_dict.pop(card_id)
-    _write_all_cards(deck, cards_dict)
-
-    return ""
-
-
-
-
-
-
-def get_all_cards(deck):
-    cards = []
-    try:
-        deck_file = open(f"{constants.DECK_PATH}/{deck}.txt", "r")
-        cards = deck_file.read().strip()
-        deck_file.close()
-    except FileNotFoundError:
-        return cards, "Error: Deck not found"
-
-    if cards == "":
-        return cards, ""
-
-    cards = cards.split("\n")
-    return cards, ""
+from app.services.deck import get_deck_id_from_name
+from app.services.db import db
 
 
 def create_card(deck, question, answer):
-    cards, message = get_all_cards(deck)
 
+    deck_id, message = get_deck_id_from_name(deck)
     if message != "":
         return message
 
-    cards_dict = _get_cards_as_dict(cards)
+    last_answered = int(time.time())
+    correct = False
+    sql_stmt = """
+INSERT INTO card (deck_id, question, answer, last_time_answered_epoch, correct)
+VALUES (?, ?, ?, ?, ?)
+"""
 
-    card_id = str(len(cards_dict) + 1)
+    try:
+        db.execute(sql_stmt, (deck_id, question, answer, last_answered, correct))
+        return ""
+    except:
+        return "Error: Could not create card"
 
-    while card_id in cards_dict:
-        card_id = str(int(card_id) + 1)
+def delete_card(deck, card_id):
+
+    deck_id, message = get_deck_id_from_name(deck)
+    if message != "":
+        return message
+
+    delete_card_stmt = """
+DELETE FROM card
+WHERE id = ? AND deck_id = ?
+"""
+
+    try:
+        db.execute(delete_card_stmt, (card_id, deck_id))
+        return ""
+    except:
+        return "Error: Could not delete card"
 
 
-    cards_dict[card_id] = {
-        "question": question,
-        "answer": answer,
-        "last_answered": int(time.time()), # Gets the current epoch time
-        "correct": False,
-    }
+def update_card(deck, card_id, question, answer):
 
-    _write_all_cards(deck, cards_dict)
-    return ""
+    deck_id, message = get_deck_id_from_name(deck)
+    if message != "":
+        return message
 
-def update_card(deck, card_id, new_question, new_answer):
-    cards, message = get_all_cards(deck)
-    cards_dict = _get_cards_as_dict(cards)
+    update_card_stmt = """
+UPDATE card
+SET question = ?, answer = ?
+WHERE id = ? AND deck_id = ?
+"""
 
-    if not card_id in cards_dict:
-        return "This card doesn't exist"
+    try:
+        db.execute(update_card_stmt, (question, answer, card_id, deck_id))
+        return ""
+    except:
+        return "Error: Could not update card"
 
-    if new_question == "":
-        return "Question cannot be empty"
+def delete_all_cards(deck):
+    deck_id, message = get_deck_id_from_name(deck)
+    if message != "":
+        return message
 
-    if new_answer == "":
-        return "Answer cannot be empty"
+    delete_all_cards_stmt = """
+DELETE FROM card
+WHERE deck_id = ?
+"""
 
-    cards_dict[card_id]["question"] = new_question
-    cards_dict[card_id]["answer"] = new_answer
+    try:
+        db.execute(delete_all_cards_stmt, (deck_id,))
+        return ""
+    except:
+        return "Error: Could not delete all cards"
 
-    _write_all_cards(deck, cards_dict)
+def get_card(deck, card_id):
+    deck_id, message = get_deck_id_from_name(deck)
 
-    return message
+    if message != "":
+        return {}, message
+
+    get_card_stmt = """
+SELECT id, question, answer, last_time_answered_epoch, correct
+FROM card
+WHERE id = ? AND deck_id = ?
+"""
+
+    try:
+        row = db.fetch_one(get_card_stmt, (card_id, deck_id))
+        if not row:
+            return {}, "Error: Card not found"
+
+        card = {
+            "id": row[0],
+            "question": row[1],
+            "answer": row[2],
+            "last_time_answered_epoch": row[3],
+            "correct": row[4]
+        }
+        return card, ""
+
+    except:
+        return {}, "Error: Could not get card"

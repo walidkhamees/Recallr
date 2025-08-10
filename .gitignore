@@ -1,3 +1,4 @@
 __pycache__/
 app/decks
-
+app/db.db
+app/user.json

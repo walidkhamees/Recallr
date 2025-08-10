@@ -1,3 +1,3 @@
-DECK_PATH = "app/decks"
-CARD_SEPRATOR = "`"
-
+QUIZ_TIME = 30
+DB_PATH = "app/db.db"
+CARDS_PER_QUIZ = 10

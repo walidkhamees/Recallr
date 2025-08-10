@@ -15,12 +15,12 @@ main {
 
 #new-deck-btn {
     background-color: #ffdc3f;
-    color: #666;
+    color: white;
 }
 
 #delete-all-btn {
     background-color: #ff6b6b;
-    color: #fff;
+    color: white;
 }
 
 #decks {

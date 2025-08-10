@@ -3,155 +3,40 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ deck.name }}</title>
+    <title>QUIZ</title>
 
     <link rel="stylesheet" href="/static/css/common.css" />
-    <link rel="stylesheet" href="/static/css/deck-style.css" />
+    <link rel="stylesheet" href="/static/css/quiz-style.css" />
   </head>
   <body>
-    <header>
-      <div class="container">
-        <a id="logo" href="/">
-          <img
-            src="/static/svg/stack.svg"
-            alt="Stack Icon"
-            width="48"
-            height="48"
-          />
-          <h1>Recallr</h1>
-        </a>
-        <nav>
-          <ul>
-            <li><a href="/help">Help</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
-
-    <div class="modal" id="create-card-modal">
-      <div class="container">
-        <form
-          id="create-card-form"
-          action="/deck/{{ deck.name }}/card"
-          method="POST"
-        >
-          <h2>Create a new card</h2>
-          <div class="input-group">
-            <label for="name">Question</label>
-            <input
-              type="text"
-              name="question"
-              id="question-input"
-              placeholder="Enter a question for your card"
-            />
-          </div>
-          <div class="input-group">
-            <label for="name">Answer</label>
-            <input
-              type="text"
-              name="answer"
-              id="answer-input"
-              placeholder="Enter an answer for your card"
-            />
-          </div>
-          <div class="form-actions">
-            <button
-              type="button"
-              id="close-create-card-btn"
-              class="cancel-button"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              id="sumbit-create-deck-btn"
-              class="confirm-button"
-            >
-              Create
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="modal" id="delete-all-modal">
-      <div class="container">
-        <form id="delete-all-form">
-          <h2>Delete All Cards in {{ deck.name }}</h2>
-          <div class="input-group">
-            <p>Are you sure you want to delete all cards in {{ deck.name }}?</p>
-          </div>
-          <div class="form-actions">
-            <button
-              type="button"
-              id="close-delete-all-btn"
-              class="cancel-button"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              id="sumbit-delete-all-btn"
-              class="confirm-button"
-            >
-              Delete
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
     <main>
-      <div class="container">
-        <div class="deck-header">
-          <div class="deck-header-title">
-            <a href="/deck">
-              <img src="/static/svg/back.svg" width="18" height="18" alt="" />
-            </a>
-            <h2>{{ deck.name }}</h2>
-          </div>
-
-          <div class="actions">
-            <button id="open-new-card-modal">Create Card</button>
-            <button id="open-delete-all-modal">Delete All Cards</button>
-          </div>
-        </div>
+      <div class="container quiz-header">
+        <h1>QUIZ for {{deck}}, quiz id: {{quiz.quiz_id}}</h1>
+        <h2>Total Time remaining <span></span></h2>
       </div>
 
-      <div class="container">
-        <div class="cards">
-          {% for card_id, card in deck.cards.items() %}
-          <div class="card-container" data-card-id="{{ card_id }}">
-            <div class="card-actions">
-              <button class="card-btn edit-card">
-                <img
-                  src="/static/svg/edit.svg"
-                  alt="edit icon"
-                  width="18"
-                  height="18"
-                />
-              </button>
-              <button class="card-btn delete-card" data-card-id="{{ card_id }}">
-                <img
-                  src="/static/svg/trash.svg"
-                  alt="trash icon"
-                  width="18"
-                  height="18"
-                />
-              </button>
-            </div>
-            <div class="card" data-flipped="false">
-              <div class="question">
-                <h3>{{ card.question }}</h3>
-              </div>
-              <div class="answer">
-                <h3>{{ card.answer }}</h3>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
+      <div
+      class="card-container"
+      data-quiz-start="{{quiz.quiz_start_epoch}}"
+      data-quiz-end="{{quiz.quiz_end_epoch}}"
+      data-quiz-id="{{quiz.quiz_id}}">
+        {% for card_id, card in quiz.cards.items() %}
+        <div
+          class="card"
+          data-card-id="{{ card_id }}"
+          style="
+          z-index: {{ quiz.cards|length - loop.index }};
+          top: calc({{ (loop.index) * 10 }}px + 50%);
+          transform: translateY(-50%) translateX(-50%);
+          left: calc({{ (loop.index % 3) * 10 }}px + 50%);
+          "
+        >
+          <p class="question">{{ card.question }}</p>
+          <form>
+            <input type="text" placeholder="Write your answer" />
+          </form>
         </div>
+        {% endfor %}
       </div>
     </main>
 
@@ -160,99 +45,76 @@
     </footer>
 
     <script>
-      function convertStringToBoolean(booleanString) {
-        switch (booleanString.toLowerCase()) {
-          case "true":
-            return true;
-          case "false":
-            return false;
-          default:
-            return false;
-        }
-      }
+        const cardsContainer = document.querySelector(".card-container");
+        const timeRemaining = document.querySelector("h2 span");
 
-      async function handleDeleteCardBtn(e) {
-        const url = window.location.href;
-        const cardId = e.target.parentElement.getAttribute("data-card-id");
-        const card = e.target.parentElement.parentElement.parentElement;
-        if (!cardId) {
-          return;
+        const quizId = Number(cardsContainer.getAttribute("data-quiz-id"));
+
+        async function handleAnswer(e) {
+            e.preventDefault();
+            const answer = e.target.querySelector("input").value;
+            const quizId = Number(cardsContainer.getAttribute("data-quiz-id"));
+            const cardId = e.target.parentElement.getAttribute("data-card-id");
+
+            const answerRequest = {
+                quiz_id: quizId,
+                card_id: cardId,
+                answer: answer
+            };
+
+            const request = await fetch("/deck/{{deck}}/quiz", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(answerRequest)
+            });
+
+            if (!request.ok) {
+                alert("Something went wrong");
+            }
+
+            e.target.parentElement.classList.add("turn-transparent");
+
+            setTimeout(() => {
+                cardsContainer.removeChild(e.target.parentElement);
+            }, 200);
+
         }
 
-        const response = await fetch(`${url}/card/${cardId}`, {
-          method: "DELETE",
+        const quizStart = Number(cardsContainer.getAttribute("data-quiz-start"));
+        const quizEnd = Number(cardsContainer.getAttribute("data-quiz-end"));
+
+        const now = Math.floor(Date.now() / 1000);
+        let time = quizEnd - now;
+
+        if (now > quizEnd) {
+            alert("Quiz is over");
+        }
+
+
+        const interval = setInterval(() => {
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            timeRemaining.innerText = `0${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+            time--;
+            if (time === 0) {
+              timeRemaining.innerText = "Time's up!";
+              clearInterval(interval);
+            }
+
+        }, 1000);
+
+
+
+        const forms = document.querySelectorAll("form");
+
+        forms.forEach(form => {
+          input = form.querySelector("input");
+          input.value = "";
+          form.addEventListener("submit", handleAnswer);
         });
 
-        if (response.ok) {
-          card.remove();
-        }
-      }
-
-      // Modals
-      const createCardModal = document.querySelector("#create-card-modal");
-      const deleteAllModal = document.querySelector("#delete-all-modal");
-
-      // open modal buttons
-      const openNewCardModalBtn = document.querySelector(
-        "#open-new-card-modal",
-      );
-      const openDeleteAllModalBtn = document.querySelector(
-        "#open-delete-all-modal",
-      );
-
-      // open modals
-      openNewCardModalBtn.addEventListener("click", () => {
-        createCardModal.style.display = "flex";
-      });
-
-      openDeleteAllModalBtn.addEventListener("click", () => {
-        deleteAllModal.style.display = "flex";
-      });
-
-      // create card form
-      const createCardForm = document.querySelector("#create-card-form");
-      const closeCreateCardBtn = document.querySelector(
-        "#close-create-card-btn",
-      );
-
-      // delete all modal form
-      const deleteAllForm = document.querySelector("#delete-all-form");
-      const closeDeleteAllBtn = document.querySelector("#close-delete-all-btn");
-
-      closeDeleteAllBtn.addEventListener("click", () => {
-        deleteAllModal.style.display = "none";
-      });
-
-      closeCreateCardBtn.addEventListener("click", () => {
-        createCardModal.style.display = "none";
-      });
-
-      // all cards
-      const cards = document.querySelectorAll(".card");
-      const deleteCardBtns = document.querySelectorAll(".card-btn.delete-card");
-
-      deleteCardBtns.forEach((deleteCardBtn) => {
-        deleteCardBtn.addEventListener("click", handleDeleteCardBtn);
-      });
-
-      cards.forEach((card) => {
-        card.addEventListener("click", () => {
-          const flipped = convertStringToBoolean(
-            card.getAttribute("data-flipped"),
-          );
-
-          if (flipped) {
-            card.setAttribute("data-flipped", "false");
-            card.querySelector(".answer").style.display = "none";
-            card.querySelector(".question").style.display = "block";
-          } else {
-            card.setAttribute("data-flipped", "true");
-            card.querySelector(".answer").style.display = "block";
-            card.querySelector(".question").style.display = "none";
-          }
-        });
-      });
     </script>
   </body>
 </html>
-

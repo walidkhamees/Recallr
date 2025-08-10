@@ -35,12 +35,12 @@ main > .container > h2 {
 
 #open-new-card-modal {
   background-color: #ffdc3f;
-  color: #666;
+  color: white;
 }
 
 #open-delete-all-modal {
   background-color: #ff6b6b;
-  color: #fff;
+  color: white;
 }
 
 .cards {

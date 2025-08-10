@@ -6,7 +6,7 @@ Idea: Make a flashcards app.
 - [x] make the deck header uniform across all pages
 
 - [ ] implement quiz feature
-- [ ] implement card update feature
+- [x] implement card update feature
 
 - [ ] implement deck update feature
 - [ ] implement deck delete feature
@@ -26,6 +26,11 @@ Idea: Make a flashcards app.
 
 ```txt
 Id`Question`Answer`LastTimeAnsweredEpoch`CorrectBoolean
+```
+
+Quiz 
+```txt
+QuizTime`CardIds`Answered
 ```
 
 - Id(int): The id of the card.

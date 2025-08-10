@@ -1,65 +1,80 @@
-import os
-import re
+from app.services.db import db
 
-from app.services.card import get_all_cards
-from app.utils import constants
 
 def get_decks():
-    decks = []
-    for file in os.listdir(constants.DECK_PATH):
-        decks.append(file.replace(".txt", ""))
+    sql_stmt = """
+SELECT name FROM deck
+"""
+    rows = db.fetch_all(sql_stmt)
+    decks = [row[0] for row in rows]
     return decks
 
-def create_deck(deck_name):
-    cleaned_deck_name = re.sub(r"[[<>/?\\,:*| ]", "", deck_name)
-    all_decks = get_decks()
+def delete_all_decks():
+    sql_stmt = """
+DELETE FROM deck
+"""
+    try:
+        db.execute(sql_stmt)
+        return ""
+    except:
+        return "Error: Could not delete all decks"
 
-    if cleaned_deck_name != deck_name:
-        return "Deck name cannot contain special characters"
+def create_deck(deck):
+    sql_stmt = """
+INSERT INTO deck (name)
+VALUES (?)
+"""
+    try:
+        db.execute(sql_stmt, (deck,))
+        return ""
+    except:
+        return "Error: Could not create deck"
 
-    if deck_name == "":
-        return "Deck name cannot be empty"
 
-    if deck_name in all_decks:
-        return f"Deck {deck_name} already exists"
+def get_deck_id_from_name(deck):
+    sql_stmt = """
+SELECT id FROM deck WHERE name = ?
+"""
+    try:
+        row = db.fetch_one(sql_stmt, (deck,))
+        return row[0], ""
+    except:
+        return "", "Error: Deck not found"
 
-    deck_file = open(f"{constants.DECK_PATH}/{deck_name}.txt", "w")
-    deck_file.close()
-
-    return ""
-
-def get_deck(deck_name):
-    deck = {
-        "name": deck_name,
-        "cards": {
-
-        }
-    }
-    cards, message = get_all_cards(deck_name)
+def get_deck(deck):
+    deck_id, message = get_deck_id_from_name(deck)
 
     if message != "":
-        return deck, message
+        return "", message
 
-    if len(cards) == 0:
-        return deck, message
+    if deck_id == "":
+        return "", "Error: Deck not found"
 
-    for card in cards:
-        card_splited = card.split(constants.CARD_SEPRATOR)
+    sql_stmt = """
+SELECT card.id, card.question, card.answer, card.last_time_answered_epoch, card.correct
+FROM card
+INNER JOIN deck ON card.deck_id = deck.id
+WHERE deck.id = ?
+"""
+    rows = db.fetch_all(sql_stmt, (deck_id,))
 
-        if len(card_splited) < 5:
-            continue
+    deck = {
+        "name": deck,
+        "cards": {}
+    }
 
-        card_id = card_splited[0]
-        card = {
-            "question": card_splited[1],
-            "answer": card_splited[2],
-            "last_answered": card_splited[3],
-            "correct": card_splited[4],
+    for row in rows:
+        card_id = row[0]
+        question = row[1]
+        answer = row[2]
+        last_answered_epoch = row[3]
+        correct = row[4]
+
+        deck["cards"][card_id] = {
+            "question": question,
+            "answer": answer,
+            "last_time_answered_epoch": last_answered_epoch,
+            "correct": correct
         }
-        deck["cards"][card_id] = card
 
-    return deck, message
-
-def delete_all_decks():
-    for file in os.listdir(constants.DECK_PATH):
-        os.remove(f"{constants.DECK_PATH}/{file}")
+    return deck, ""
