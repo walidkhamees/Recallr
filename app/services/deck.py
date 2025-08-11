@@ -39,7 +39,7 @@ SELECT id FROM deck WHERE name = ?
         row = db.fetch_one(sql_stmt, (deck,))
         return row[0], ""
     except:
-        return "", "Error: Deck not found"
+        return -1, "Error: Deck not found"
 
 def get_deck(deck):
     deck_id, message = get_deck_id_from_name(deck)

@@ -5,13 +5,24 @@ Idea: Make a flashcards app.
 - [x] make the logo point to /
 - [x] make the deck header uniform across all pages
 
-- [ ] implement quiz feature
-- [x] implement card update feature
+- [ ] Implement quiz feature
+    - [x] route the user to result page for quiz
+    - [x] store user `answer` to the database `quiz_card`
+    - [x] store quiz `status` in the database `quiz`
+        - [ ] remove `status` from quiz and relay on quiz_card table.
+    - [x] Fix
+        - [ ] User can see the quiz result even if the quiz is not over.
+        - [ ] Also happens in the all results page.
 
-- [ ] implement deck update feature
-- [ ] implement deck delete feature
 
-- [ ] implement authentication with Sessions
+- [x] all results page
+
+- [x] Implement card update feature
+
+- [ ] Implement deck update feature
+- [ ] Implement deck delete feature
+
+- [ ] Implement authentication with Sessions
 
 # Some Missing Features
 
@@ -28,7 +39,7 @@ Idea: Make a flashcards app.
 Id`Question`Answer`LastTimeAnsweredEpoch`CorrectBoolean
 ```
 
-Quiz 
+Quiz
 ```txt
 QuizTime`CardIds`Answered
 ```

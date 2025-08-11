@@ -1,0 +1,83 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Results of {{ deck }}</title>
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/quizzes-results-style.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- <link -->
+    <!--   href="https://fonts.googleapis.com/icon?family=Material+Icons" -->
+    <!--   rel="stylesheet" -->
+    <!-- /> -->
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <a id="logo" href="/">
+          <img
+            src="/static/svg/stack.svg"
+            alt="Stack Icon"
+            width="48"
+            height="48"
+          />
+          <h1>Recallr</h1>
+        </a>
+        <nav>
+          <ul>
+            <li><a href="/help">Help</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="quiz-results-header">
+          <h2>{{ deck }} quiz results</h2>
+          <p>
+            Review your past quiz attempts and track your progress over time.
+          </p>
+        </div>
+
+        <div class="all-results">
+          <h3>All Results</h3>
+          <div class="all-results-container">
+            {% for quiz_id, result in results.items() %}
+
+            <div class="quiz-result">
+              <div class="result-header">
+                <p class="result-time">{{result.time}}</p>
+                <p>|</p>
+                {% if result.correct > (result.wrong + result.correct) / 2 %}
+                <p class="result-percentage correct">
+                  {{ (result.correct / (result.wrong + result.correct)) * 100 |
+                  round(2) }}%
+                </p>
+                {% else %}
+                <p class="result-percentage wrong">
+                  {{ (result.correct / (result.wrong + result.correct)) * 100 |
+                  round(2) }}%
+                </p>
+                {% endif %}
+                <!-- put icon here  -->
+              </div>
+              <a class="result-link" href="/deck/{{ deck }}/result/{{ quiz_id }}">
+                <span class="material-icons material-symbols-outlined"> arrow_outward </span>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Recallr | All rights reserved</p>
+    </footer>
+  </body>
+</html>

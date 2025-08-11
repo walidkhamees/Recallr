@@ -1,3 +1,3 @@
-QUIZ_TIME = 30
+QUIZ_TIME = 1800
 DB_PATH = "app/db.db"
 CARDS_PER_QUIZ = 10

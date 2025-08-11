@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/quiz-result-style.css" />
+    <title>Quiz {{ quiz_id }} on {{ deck }}</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <a id="logo" href="/">
+          <img
+            src="/static/svg/stack.svg"
+            alt="Stack Icon"
+            width="48"
+            height="48"
+          />
+          <h1>Recallr</h1>
+        </a>
+        <nav>
+          <ul>
+            <li><a href="/help">Help</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="result-card">
+          <div class="result-header">
+
+            {% if result.correct > (result.correct + result.wrong + result.unanswered) / 2 %}
+                <img
+                  src="/static/svg/trophy.svg"
+                  alt="Trophy Icon"
+                  width="48"
+                  height="48"
+                />
+            {% else %}
+                <img
+                  src="/static/svg/cross.svg"
+                  alt="Cross Icon"
+                  width="48"
+                  height="48"
+                />
+            {% endif %}
+
+            <div class="header-message">
+              <h2>
+                {{ "Congratulations!" if result.correct > (result.correct +
+                result.wrong + result.unanswered) / 2 else "Try Again!" }}
+              </h2>
+              <p>You have completed the quiz.</p>
+            </div>
+          </div>
+
+          <div class="result-overview">
+            <h2>Quiz Result</h2>
+            <div class="info">
+              <p>Quiz ID:</p>
+              <p>{{ result.quiz_id }}</p>
+            </div>
+            <div class="info">
+              <p>Deck:</p>
+              <p>{{ deck }}</p>
+            </div>
+            <hr />
+            <div class="info score">
+              <p>Score:</p>
+              <p class="mark">
+                <span>{{ result.correct }}</span> / {{ result.correct +
+                result.wrong + result.unanswered }}
+              </p>
+            </div>
+          </div>
+
+          <div class="result-details">
+            <div class="result-details-header">
+              <h2>Questions Review</h2>
+              <hr />
+            </div>
+            <div class="questions">
+              {% for card_id, card in result.cards.items() %} {% if card.correct
+              %}
+              <div class="question-container correct">
+                <img
+                  src="/static/svg/check.svg"
+                  alt="Correct Icon"
+                  width="24"
+                  height="24"
+                />
+                <div class="question">
+                  <p class="question-text">{{ card.question }}</p>
+                  <p class="user-answer-text">
+                    Your Answer: {{ card.user_answer }}
+                  </p>
+                </div>
+              </div>
+              {% else %}
+
+              <div class="question-container wrong">
+                <img
+                  src="/static/svg/cross.svg"
+                  alt="Correct Icon"
+                  width="24"
+                  height="24"
+                />
+                <div class="question">
+                  <p class="question-text">{{ card.question }}</p>
+                  <p class="user-answer-text">
+                    Your Answer: {{ card.user_answer }}
+                  </p>
+                  <p class="correct-answer-text">
+                    Correct Answer: {{ card.answer }}
+                  </p>
+                </div>
+              </div>
+              {%endif %} {% endfor %}
+            </div>
+          </div>
+
+          <div class="container actions">
+            <a href="/deck/{{ deck }}" class="btn deck"> {{ deck }} </a>
+            <a href="/deck" class="btn decks">
+              Decks
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Recallr | All rights reserved</p>
+    </footer>
+  </body>
+</html>
+

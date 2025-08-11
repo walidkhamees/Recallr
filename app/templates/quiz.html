@@ -17,8 +17,9 @@
 
       <div
       class="card-container"
-      data-quiz-start="{{quiz.quiz_start_epoch}}"
-      data-quiz-end="{{quiz.quiz_end_epoch}}"
+      data-deck-name="{{deck}}"
+      data-quiz-start="{{quiz.start_epoch}}"
+      data-quiz-end="{{quiz.end_epoch}}"
       data-quiz-id="{{quiz.quiz_id}}">
         {% for card_id, card in quiz.cards.items() %}
         <div
@@ -49,6 +50,13 @@
         const timeRemaining = document.querySelector("h2 span");
 
         const quizId = Number(cardsContainer.getAttribute("data-quiz-id"));
+        const deckName = cardsContainer.getAttribute("data-deck-name");
+        const quizStart = Number(cardsContainer.getAttribute("data-quiz-start"));
+        const quizEnd = Number(cardsContainer.getAttribute("data-quiz-end"));
+
+        if (cardsContainer.childElementCount === 0) {
+            window.location.href = `/deck/${deckName}/result/${quizId}`;
+        }
 
         async function handleAnswer(e) {
             e.preventDefault();
@@ -62,7 +70,7 @@
                 answer: answer
             };
 
-            const request = await fetch("/deck/{{deck}}/quiz", {
+            const request = await fetch(`/deck/${deckName}/quiz`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -73,17 +81,19 @@
             if (!request.ok) {
                 alert("Something went wrong");
             }
+            else {
+                e.target.parentElement.classList.add("turn-transparent");
 
-            e.target.parentElement.classList.add("turn-transparent");
-
-            setTimeout(() => {
-                cardsContainer.removeChild(e.target.parentElement);
-            }, 200);
+                setTimeout(() => {
+                    cardsContainer.removeChild(e.target.parentElement);
+                    if (cardsContainer.childElementCount === 0) {
+                        window.location.href = `/deck/${deckName}/result/${quizId}`;
+                    }
+                }, 200);
+            }
 
         }
 
-        const quizStart = Number(cardsContainer.getAttribute("data-quiz-start"));
-        const quizEnd = Number(cardsContainer.getAttribute("data-quiz-end"));
 
         const now = Math.floor(Date.now() / 1000);
         let time = quizEnd - now;
