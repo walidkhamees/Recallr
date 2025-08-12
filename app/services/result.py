@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 
 from app.services.db import db
 from app.services.deck import get_deck_id_from_name
@@ -7,6 +8,7 @@ def get_all_quiz_results(deck):
     deck_id, message = get_deck_id_from_name(deck)
     if message != "":
         return {}, "Error: Deck not found"
+
 
     get_all_quiz_results_stmt = """
         SELECT quiz.id, quiz.start_epoch,
@@ -17,10 +19,14 @@ def get_all_quiz_results(deck):
         as correct,
         (
             select count(*) from quiz_card
-            where quiz_card.quiz_id = quiz.id and quiz_card.answered != 1
-        ) as wrong
+            where quiz_card.quiz_id = quiz.id and quiz_card.answered = -1
+        ) as wrong,
+        (
+            select count(*) from quiz_card
+            where quiz_card.quiz_id = quiz.id
+        ) as total
         FROM quiz
-        WHERE quiz.deck_id = ? and ( quiz.status = 1 or quiz.end_epoch < ? )
+        WHERE quiz.deck_id = ? and (quiz.end_epoch < ? or total = correct + wrong)
         ORDER BY quiz.start_epoch DESC;
     """
     now = int(datetime.now().timestamp())
@@ -34,7 +40,7 @@ def get_all_quiz_results(deck):
         results[row[0]] = {
             "time": datetime.fromtimestamp(row[1]).strftime("%B %d, %Y"),
             "correct": row[2],
-            "wrong": row[3],
+            "wrong": row[4] - row[2],
         }
 
     return results, ""
@@ -65,35 +71,42 @@ def get_quiz_result(quiz_id):
     """
 
     result_stmt = """
-        SELECT card.id, quiz_card.answered, quiz_card.answer, card.question, card.answer as user_answer
+        SELECT card.id, quiz_card.answered, quiz_card.answer, card.question, card.answer as user_answer,
+        (
+            select count(*) from quiz_card
+            where quiz_card.quiz_id = ? and quiz_card.answered = 1
+        ) as correct,
+        (
+            select count(*) from quiz_card
+            where quiz_card.quiz_id = ? and quiz_card.answered = -1
+        ) as wrong,
+        (
+            select count(*) from quiz_card
+            where quiz_card.quiz_id = ?
+        ) as total
         FROM quiz_card
         INNER JOIN card ON quiz_card.card_id = card.id
-        WHERE quiz_card.quiz_id = ?
-    """
-    all_questions_stmt = """
-        SELECT COUNT(*) FROM quiz_card
-        WHERE quiz_card.quiz_id = ?;
+        INNER JOIN quiz ON quiz.id = quiz_card.quiz_id -- for end_epoch
+        WHERE quiz_card.quiz_id = ? AND (total = correct + wrong or quiz.end_epoch < ?)
     """
 
+    now = int(time.time())
     try:
-        quiz_cards = db.fetch_all(result_stmt, (quiz_id,))
-        all_questions = db.fetch_one(all_questions_stmt, (quiz_id,))
+        quiz_cards = db.fetch_all(result_stmt, (quiz_id, quiz_id, quiz_id, quiz_id, now))
     except:
         return {}, "Error: Could not get quiz result"
 
+    if len(quiz_cards) == 0 or quiz_cards == None:
+        return {}, "Error: Could not get quiz result"
 
-    correct = 0
-    wrong = 0
-    for card in quiz_cards:
-        if card[1] == 1:
-            correct += 1
-        elif card[1] == -1:
-            wrong += 1
+    correct = quiz_cards[0][5]
+    wrong = quiz_cards[0][6]
+    total = quiz_cards[0][7]
 
     quiz_result = {
         "correct": correct,
         "wrong": wrong,
-        "unanswered": all_questions[0] - correct - wrong,
+        "unanswered": total - correct - wrong,
         "quiz_id": quiz_id,
 
         "cards": {}

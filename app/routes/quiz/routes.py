@@ -7,10 +7,10 @@ quiz_bp = Blueprint("quiz_bp", __name__, url_prefix="/deck/<deck>/quiz")
 @quiz_bp.route("/", methods=["GET"])
 def index(deck):
     quiz, message = create_quiz(deck)
-    quiz_id = quiz["quiz_id"]
-
     if message != "":
         return message
+
+    quiz_id = quiz["quiz_id"]
     if len(quiz["cards"]) == 0:
         return redirect(f"/deck/{deck}/result/{quiz_id}")
 

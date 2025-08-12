@@ -29,7 +29,6 @@ def init_db():
     CREATE TABLE IF NOT EXISTS quiz (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         deck_id INTEGER NOT NULL,
-        status BOOLEAN NOT NULL,
         start_epoch INTEGER NOT NULL,
         end_epoch INTEGER NOT NULL,
         FOREIGN KEY(deck_id) REFERENCES deck(id) ON DELETE CASCADE

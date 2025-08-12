@@ -35,6 +35,7 @@ def get_cards_on_answer(quiz_id, answer):
     except:
         return {}, "Error: Could not get cards for quiz"
 
+# TODO: Refactor this function
 def get_last_quiz(deck):
     """
     Get the last quiz for a deck
@@ -162,8 +163,8 @@ def create_quiz(deck):
         return {}, message
 
     create_quiz_stmt = """
-        INSERT INTO quiz (deck_id, status, start_epoch, end_epoch)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO quiz (deck_id, start_epoch, end_epoch)
+        VALUES (?, ?, ?)
     """
 
     quiz_id = 0
@@ -173,7 +174,7 @@ def create_quiz(deck):
         return {}, message
 
     try:
-        cur = db.execute_without_commit(create_quiz_stmt, (deck_id, 0, now, after))
+        cur = db.execute_without_commit(create_quiz_stmt, (deck_id, now, after))
         quiz_id = cur.lastrowid
     except:
         db.rollback()
@@ -241,8 +242,6 @@ def answer_card_in_quiz(quiz_id, deck, card_id, answer):
     elif quiz_card[1] != 0:
         return "Error: Card already answered"
 
-
-
     answer_card_stmt = """
         UPDATE card
         SET last_time_answered_epoch = ?, correct = ?
@@ -273,22 +272,6 @@ def answer_card_in_quiz(quiz_id, deck, card_id, answer):
     except:
         db.rollback()
         return "Error: Could not answer card in quiz"
-
-    # Check if all cards are answered
-    check_cards_stmt = """
-        SELECT * FROM quiz_card
-        WHERE quiz_id = ? AND answered = 0
-        LIMIT 1;
-    """
-
-    rows = db.fetch_one(check_cards_stmt, (quiz_id,))
-
-    if rows == None:
-        end_quiz_stmt = """
-        UPDATE quiz SET status = 1
-        WHERE quiz.id = ?;
-        """
-        db.execute_without_commit(end_quiz_stmt, (quiz_id,))
 
     db.commit()
 
