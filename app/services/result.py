@@ -70,12 +70,38 @@ def get_quiz_result(quiz_id):
             message: error message if there was an error
     """
 
+    quiz_done_stmt = """
+        SELECT
+        (
+            SELECT COUNT(*) FROM quiz_card
+            WHERE quiz_card.quiz_id = ? AND quiz_card.answered = 1
+        ) AS correct,
+        (
+            SELECT count(*) FROM quiz_card
+            WHERE quiz_card.quiz_id = ? AND quiz_card.answered = -1
+        ) AS wrong,
+        (
+            SELECT count(*) FROM quiz_card
+            WHERE quiz_card.quiz_id = ?
+        ) AS total
+        FROM quiz_card
+        INNER JOIN quiz ON quiz.id = quiz_card.quiz_id -- for end_epoch
+        WHERE quiz_card.quiz_id = ?
+        AND (total = (wrong + correct) or quiz.end_epoch < ?)
+        LIMIT 1
+    """
+
+    now = int(time.time())
+    row = db.fetch_one(quiz_done_stmt, (quiz_id, quiz_id, quiz_id, quiz_id, now))
+    if row == None and len(row) == 0:
+        return {}, "Error: Could not get quiz result"
+
     result_stmt = """
         SELECT card.id, quiz_card.answered, quiz_card.answer, card.question, card.answer as user_answer,
         (
-            select count(*) from quiz_card
-            where quiz_card.quiz_id = ? and quiz_card.answered = 1
-        ) as correct,
+            SELECT COUNT(*) FROM quiz_card
+            WHERE quiz_card.quiz_id = ? AND quiz_card.answered = 1
+        ) AS correct,
         (
             select count(*) from quiz_card
             where quiz_card.quiz_id = ? and quiz_card.answered = -1
@@ -86,13 +112,13 @@ def get_quiz_result(quiz_id):
         ) as total
         FROM quiz_card
         INNER JOIN card ON quiz_card.card_id = card.id
-        INNER JOIN quiz ON quiz.id = quiz_card.quiz_id -- for end_epoch
-        WHERE quiz_card.quiz_id = ? AND (total = correct + wrong or quiz.end_epoch < ?)
+        WHERE quiz_card.quiz_id = ?;
     """
 
-    now = int(time.time())
+
     try:
-        quiz_cards = db.fetch_all(result_stmt, (quiz_id, quiz_id, quiz_id, quiz_id, now))
+        quiz_cards = db.fetch_all(result_stmt, (quiz_id, quiz_id, quiz_id, quiz_id))
+        print(quiz_cards)
     except:
         return {}, "Error: Could not get quiz result"
 
