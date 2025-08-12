@@ -20,7 +20,8 @@ def get_all_quiz_results(deck):
             where quiz_card.quiz_id = quiz.id and quiz_card.answered != 1
         ) as wrong
         FROM quiz
-        WHERE quiz.deck_id = ? and ( quiz.status = 1 or quiz.end_epoch < ? );
+        WHERE quiz.deck_id = ? and ( quiz.status = 1 or quiz.end_epoch < ? )
+        ORDER BY quiz.start_epoch DESC;
     """
     now = int(datetime.now().timestamp())
     try:

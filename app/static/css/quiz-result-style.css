@@ -39,6 +39,19 @@ main {
   gap: 1em;
 }
 
+.result-header > span {
+  font-size: 3em;
+}
+
+.result-header > span.icon-correct {
+  font-size: 4ema;
+  color: #EAC452;
+}
+
+.result-header > span.icon-wrong {
+  color: #e53e3e;
+}
+
 .header-message {
   display: flex;
   flex-direction: column;
@@ -148,9 +161,17 @@ hr {
   border: 2px solid #bbf7d0;
 }
 
+.correct > span {
+  color: #1d8443;
+}
+
 .wrong {
   background-color: #fef2f2;
   border: 2px solid #fed3d3;
+}
+
+.wrong > span {
+  color: #e53e3e;
 }
 
 .question p {
@@ -170,6 +191,13 @@ hr {
   color: #1d8443;
 }
 
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    width: fit-content;
+}
+
 .btn.deck {
     background-color: #e5e7eb;
     color: #1f2937;
@@ -179,5 +207,4 @@ hr {
     background-color: #4f46e5;
     color: white;
     text-decoration: none;
-    margin-left: 1em;
 }

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/static/css/common.css" />
     <link rel="stylesheet" href="/static/css/quiz-result-style.css" />
     <title>Quiz {{ quiz_id }} on {{ deck }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   </head>
 
   <body>
@@ -34,19 +35,9 @@
           <div class="result-header">
 
             {% if result.correct > (result.correct + result.wrong + result.unanswered) / 2 %}
-                <img
-                  src="/static/svg/trophy.svg"
-                  alt="Trophy Icon"
-                  width="48"
-                  height="48"
-                />
+                <span class="material-icons material-symbols-outlined icon-correct"> trophy </span>
             {% else %}
-                <img
-                  src="/static/svg/cross.svg"
-                  alt="Cross Icon"
-                  width="48"
-                  height="48"
-                />
+                <span class="material-icons material-symbols-outlined icon-wrong">cancel</span>
             {% endif %}
 
             <div class="header-message">
@@ -87,12 +78,9 @@
               {% for card_id, card in result.cards.items() %} {% if card.correct
               %}
               <div class="question-container correct">
-                <img
-                  src="/static/svg/check.svg"
-                  alt="Correct Icon"
-                  width="24"
-                  height="24"
-                />
+                <span class="material-icons material-symbols-outlined">
+                    check_circle
+                </span>
                 <div class="question">
                   <p class="question-text">{{ card.question }}</p>
                   <p class="user-answer-text">
@@ -103,12 +91,9 @@
               {% else %}
 
               <div class="question-container wrong">
-                <img
-                  src="/static/svg/cross.svg"
-                  alt="Correct Icon"
-                  width="24"
-                  height="24"
-                />
+                <span class="material-icons material-symbols-outlined">
+                    cancel
+                </span>
                 <div class="question">
                   <p class="question-text">{{ card.question }}</p>
                   <p class="user-answer-text">
@@ -124,9 +109,17 @@
           </div>
 
           <div class="container actions">
-            <a href="/deck/{{ deck }}" class="btn deck"> {{ deck }} </a>
+            <a href="/deck/{{ deck }}" class="btn deck">
+                <span class="material-symbols-outlined">arrow_back</span>
+                <p>
+                    {{ deck }}
+                </p>
+            </a>
             <a href="/deck" class="btn decks">
-              Decks
+              <span class="material-symbols-outlined">home</span>
+              <p>
+                  Decks
+              </p>
             </a>
           </div>
         </div>
