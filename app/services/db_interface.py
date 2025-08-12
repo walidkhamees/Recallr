@@ -14,7 +14,7 @@ class DB_interface:
         cur.execute(query, params)
         conn.commit()
         return cur
-    
+
     def rollback(self):
         self.conn.rollback()
 

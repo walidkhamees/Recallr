@@ -24,6 +24,11 @@ def create_deck(deck):
 INSERT INTO deck (name)
 VALUES (?)
 """
+
+    deck = deck.strip()
+    if deck == "":
+        return "Error: Deck name cannot be empty"
+
     try:
         db.execute(sql_stmt, (deck,))
         return ""
