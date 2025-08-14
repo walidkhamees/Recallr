@@ -122,6 +122,40 @@
       </div>
     </div>
 
+    <div class="modal" id="input-quiz-time-modal">
+      <div class="container">
+        <form id="input-quiz-time-form">
+          <h2>Input quiz time</h2>
+          <div class="input-group">
+            <label for="name">Quiz Time</label>
+            <p class="hint">
+              Input the time in seconds for the quiz (default is 30 seconds)
+            </p>
+            <input
+              type="text"
+              placeholder="Enter a quiz time in seconds"
+              id="input-quiz-time"
+            />
+          </div>
+          <ul id="input-quiz-time-messages" class="m-0"></ul>
+          <div class="form-actions">
+            <button id="close-input-quiz-time-btn" class="cancel-button">
+              Cancel
+            </button>
+            <button id="reset-input-quiz-time-btn" class="cancel-button">
+                Reset
+            </button>
+            <input
+              type="submit"
+              id="submit-input-quiz-time-btn"
+              class="confirm-button"
+              value="Save Quiz Time"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+
     <div class="modal" id="delete-all-modal">
       <div class="container">
         <form id="delete-all-form">
@@ -163,6 +197,9 @@
             <button class="btn" id="open-new-card-modal">Create Card</button>
             <button class="btn" id="open-delete-all-modal">
               Delete All Cards
+            </button>
+            <button class="btn" id="open-input-quiz-time-modal">
+              Input Quiz Time
             </button>
             <a href="{{ deck.name }}/quiz" id="start-quiz" class="btn">
               Start Quiz

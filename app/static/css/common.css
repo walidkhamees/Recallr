@@ -135,7 +135,7 @@ input[type="text"] {
 }
 
 .main {
-    position: relative;
+  position: relative;
 }
 
 .deck-header {
@@ -172,34 +172,34 @@ input[type="text"] {
 }
 
 .btn {
-    display: flex;
+  display: flex;
 
-    align-items: center;
-    justify-content: center;
+  align-items: center;
+  justify-content: center;
 
-    gap: 0.5em;
-    color: white;
+  gap: 0.5em;
+  color: white;
 
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 0.5em 1em;
-    border-radius: 0.5em;
-    font-weight: bold;
-    cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  font-weight: bold;
+  cursor: pointer;
 }
 .btn > p {
-    margin: 0;
+  margin: 0;
 }
 
 .m-0 {
-    margin: 0;
+  margin: 0;
 }
 
 .color-gray {
-    color: #eaeaea;
+  color: #eaeaea;
 }
 
 input[type="submit"]:disabled {
-    background-color: #ccc;
-    color: #fff;
-    cursor: not-allowed;
+  background-color: #ccc;
+  color: #fff;
+  cursor: not-allowed;
 }

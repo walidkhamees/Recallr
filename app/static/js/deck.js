@@ -1,3 +1,19 @@
+function updateQuizLink() {
+  const quizLink = document.querySelector("#start-quiz");
+
+  const quizTimeStr = localStorage.getItem("quizTime");
+  const quizTime = quizTimeStr ? parseInt(quizTimeStr) : null;
+
+  const quizUrl = new URL(window.location.href + "/quiz");
+  quizUrl.searchParams.set("quiz_time", quizTime);
+
+  if (quizTime) {
+    quizLink.href = quizUrl.toString();
+  }
+}
+
+updateQuizLink();
+
 function convertStringToBoolean(booleanString) {
   switch (booleanString.toLowerCase()) {
     case "true":
@@ -110,8 +126,12 @@ const createCardAnswerInput = document.querySelector("#answer-input");
 const createCardMessages = document.querySelector("#create-card-messages");
 const createCardSubmitBtn = document.querySelector("#submit-create-deck-btn");
 
-createCardQuestionInput.addEventListener("input", (e) => {
+closeCreateCardBtn.addEventListener("click", () => {
+  createCardModal.style.display = "none";
+  messages.clear();
+});
 
+createCardQuestionInput.addEventListener("input", (e) => {
   createCardQuestionInput.value = e.currentTarget.value;
   const emptyMessage = "Question cannot be empty";
   if (e.currentTarget.value === "") {
@@ -251,11 +271,6 @@ updateCardForm.addEventListener("submit", async (e) => {
   updateMessages(updateCardMessages);
 });
 
-closeCreateCardBtn.addEventListener("click", () => {
-  createCardModal.style.display = "none";
-  messages.clear();
-});
-
 deleteAllForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const currentPath = window.location.href;
@@ -268,4 +283,78 @@ deleteAllForm.addEventListener("submit", async (e) => {
     window.location.reload();
     return;
   }
+});
+
+// input quiz time
+const inputQuizTimeModal = document.querySelector("#input-quiz-time-modal");
+const inputQuizTimeForm = document.querySelector("#input-quiz-time-form");
+const closeInputQuizTimeBtn = document.querySelector(
+  "#close-input-quiz-time-btn",
+);
+const inputQuizTimeMessages = document.querySelector(
+  "#input-quiz-time-messages",
+);
+const inputQuizTimeInput = document.querySelector("#input-quiz-time");
+const inputQuizTimeSubmitBtn = document.querySelector(
+  "#submit-input-quiz-time-btn",
+);
+const inputQuizTimeResetBtn = document.querySelector(
+  "#reset-input-quiz-time-btn",
+);
+
+const openInputQuizTimeBtn = document.querySelector(
+  "#open-input-quiz-time-modal",
+);
+
+openInputQuizTimeBtn.addEventListener("click", () => {
+  inputQuizTimeModal.style.display = "flex";
+  inputQuizTimeInput.value = "";
+});
+
+closeInputQuizTimeBtn.addEventListener("click", () => {
+  inputQuizTimeModal.style.display = "none";
+  messages.clear();
+});
+
+inputQuizTimeInput.addEventListener("input", (e) => {
+  const inputValue = e.target.value;
+  const digitsOnly = /^\d+$/;
+
+  const emptyMessage = "Quiz time cannot be empty";
+  if (inputValue.length == 0) {
+    messages.add(emptyMessage);
+  } else {
+    messages.delete(emptyMessage);
+  }
+
+  const digitsOnlyMessage = "Quiz time must be a number";
+  if (!digitsOnly.test(inputValue)) {
+    messages.add(digitsOnlyMessage);
+  } else {
+    messages.delete(digitsOnlyMessage);
+  }
+
+  if (messages.size == 0) {
+    inputQuizTimeSubmitBtn.disabled = false;
+  } else {
+    inputQuizTimeSubmitBtn.disabled = true;
+  }
+
+  updateMessages(inputQuizTimeMessages);
+});
+
+inputQuizTimeForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const quizTime = inputQuizTimeInput.value;
+  localStorage.setItem("quizTime", quizTime);
+  updateQuizLink();
+
+  inputQuizTimeModal.style.display = "none";
+});
+
+inputQuizTimeResetBtn.addEventListener("click", () => {
+  localStorage.removeItem("quizTime");
+  inputQuizTimeModal.style.display = "none";
+  messages.clear();
+  updateQuizLink();
 });

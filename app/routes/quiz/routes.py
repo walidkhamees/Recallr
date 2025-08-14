@@ -6,7 +6,12 @@ quiz_bp = Blueprint("quiz_bp", __name__, url_prefix="/deck/<deck>/quiz")
 
 @quiz_bp.route("/", methods=["GET"])
 def index(deck):
-    quiz, message = create_quiz(deck)
+    quiz_time = request.args.get("quiz_time", "30")
+    if not quiz_time.isdigit():
+        return "Error: Quiz time must be a number"
+    quiz_time = int(quiz_time)
+
+    quiz, message = create_quiz(deck, quiz_time)
     if message != "":
         return message
 

@@ -115,7 +115,7 @@ WHERE quiz_card.quiz_id = ?
     except:
         return {}, "Error: Could not get last quiz"
 
-def create_quiz(deck):
+def create_quiz(deck, quiz_time):
     """
         create a new quiz or return the last quiz if it's still active
 
@@ -140,7 +140,11 @@ def create_quiz(deck):
     """
 
     now = int(time.time())
-    after = now + constants.QUIZ_TIME
+    quiz_time = int(quiz_time)
+    if quiz_time <= 0:
+        return {}, "Error: Quiz time must be greater than 0"
+
+    after = now + quiz_time
 
     last_quiz, message = get_last_quiz(deck)
 
