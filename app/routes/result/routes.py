@@ -2,8 +2,7 @@ from flask import Blueprint, render_template
 
 from app.services.result import get_all_quiz_results, get_quiz_result
 
-
-result_bp = Blueprint('result', __name__, url_prefix='/deck/<deck>/result')
+result_bp = Blueprint("result", __name__, url_prefix="/deck/<deck>/result")
 
 @result_bp.route("/<int:quiz_id>", methods=["GET"])
 def quiz_result_route(deck, quiz_id):
@@ -18,3 +17,19 @@ def quiz_results_route(deck):
     if message != "":
         return message
     return render_template("quizzes_results.html", deck=deck, results=results)
+
+# route that returns quiz results as a text file
+@result_bp.route("/text", methods=["GET"])
+def quiz_text_results_route(deck):
+    results, message = get_all_quiz_results(deck)
+    if message != "":
+        return message
+
+    with open("app/static/all_results/quiz_results.txt", "w") as f:
+        f.write("Quiz ID - Time - Correct - Wrong\n")
+        for quiz_id, result in results.items():
+            f.write(f"{quiz_id} - {result["time"]} - {result["correct"]} - {result["wrong"]}\n")
+
+    with open("app/static/all_results/quiz_results.txt", "r") as f:
+        return render_template("result_text.html", text=f.read())
+

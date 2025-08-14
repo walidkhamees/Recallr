@@ -7,6 +7,10 @@
 
     <link rel="stylesheet" href="/static/css/common.css" />
     <link rel="stylesheet" href="/static/css/deck-style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -143,7 +147,7 @@
               Cancel
             </button>
             <button id="reset-input-quiz-time-btn" class="cancel-button">
-                Reset
+              Reset
             </button>
             <input
               type="submit"
@@ -201,6 +205,10 @@
             <button class="btn" id="open-input-quiz-time-modal">
               Input Quiz Time
             </button>
+            <a href="{{ deck.name }}/result" id="previous-results" class="btn">
+              <span class="material-symbols-outlined icon-small"> bar_chart </span>
+              <p>Previous results</p>
+            </a>
             <a href="{{ deck.name }}/quiz" id="start-quiz" class="btn">
               Start Quiz
             </a>

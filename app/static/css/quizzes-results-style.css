@@ -19,18 +19,26 @@ main .container {
     gap: 1em;
 }
 
+
 .quiz-results-header h2 {
     font-size: 2em;
     color: #1f2937;
 }
 
-.quiz-results-header p {
+.quiz-results-header > p {
     font-size: 1.2em;
     color: #4c5664;
 }
 
 .quiz-results-header h2,p {
     margin: 0;
+}
+
+.quiz-results-header > .actions > a {
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    color: white;
 }
 
 

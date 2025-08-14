@@ -5,7 +5,10 @@
     <title>Quiz Results of {{ deck }}</title>
     <link rel="stylesheet" href="/static/css/common.css" />
     <link rel="stylesheet" href="/static/css/quizzes-results-style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
 
     <!-- <link -->
     <!--   href="https://fonts.googleapis.com/icon?family=Material+Icons" -->
@@ -40,6 +43,12 @@
           <p>
             Review your past quiz attempts and track your progress over time.
           </p>
+          <div class="actions">
+            <a href="/deck/{{ deck }}/result/text" class="btn confirm-button">
+              <span class="material-symbols-outlined"> text_ad </span>
+              <p>Results as a text file</p>
+            </a>
+          </div>
         </div>
 
         <div class="all-results">
@@ -64,7 +73,10 @@
                 {% endif %}
                 <!-- put icon here  -->
               </div>
-              <a class="result-link" href="/deck/{{ deck }}/result/{{ quiz_id }}">
+              <a
+                class="result-link"
+                href="/deck/{{ deck }}/result/{{ quiz_id }}"
+              >
                 <span class="material-symbols-outlined"> arrow_outward </span>
               </a>
             </div>

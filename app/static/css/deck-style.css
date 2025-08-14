@@ -8,6 +8,10 @@ main {
   flex: 1;
 }
 
+.deck-header {
+    justify-content: flex-start;
+    flex-direction: column;
+}
 #start-quiz {
   background-color: #373669;
   color: white;
@@ -104,3 +108,12 @@ main > .container > h2 {
   align-items: center;
   gap: 0.5em;
 }
+
+#previous-results {
+    background-color: #373669;
+    color: white;
+    text-decoration: none;
+    margin: 0;
+    font-size: 0.8em;
+}
+

@@ -37,8 +37,9 @@ def get_all_quiz_results(deck):
 
     results = {}
     for row in rows:
+        time = datetime.fromtimestamp(row[1]).strftime("%B %d, %Y")
         results[row[0]] = {
-            "time": datetime.fromtimestamp(row[1]).strftime("%B %d, %Y"),
+            "time": time,
             "correct": row[2],
             "wrong": row[4] - row[2],
         }

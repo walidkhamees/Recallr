@@ -151,7 +151,8 @@ input[type="text"] {
 .deck-header .deck-header-title {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  width: 100%;
   gap: 0.5em;
 }
 
@@ -194,6 +195,10 @@ input[type="text"] {
   margin: 0;
 }
 
+.icon-small {
+  font-size: 16px !important;
+}
+
 .color-gray {
   color: #eaeaea;
 }
@@ -203,3 +208,4 @@ input[type="submit"]:disabled {
   color: #fff;
   cursor: not-allowed;
 }
+
