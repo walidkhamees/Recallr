@@ -1,13 +1,20 @@
+import re
+
 from app.services.db import db
 
 
 def get_decks():
     sql_stmt = """
-SELECT name FROM deck
+SELECT id, name FROM deck
 """
-    rows = db.fetch_all(sql_stmt)
-    decks = [row[0] for row in rows]
-    return decks
+    try:
+        rows = db.fetch_all(sql_stmt)
+    except:
+        return {}, "Error: Could not fetch decks"
+    decks = {}
+    for row in rows:
+        decks[row[0]] = row[1]
+    return decks, ""
 
 def delete_all_decks():
     sql_stmt = """
@@ -20,10 +27,15 @@ DELETE FROM deck
         return "Error: Could not delete all decks"
 
 def create_deck(deck):
+    special_characters_pattern = r"[\[\]\<\>\/\?\\:\*\|\s\&\+]+"
+
+    if re.search(special_characters_pattern, deck):
+        return "Error: Deck name cannot contain special characters"
+
     sql_stmt = """
-INSERT INTO deck (name)
-VALUES (?)
-"""
+        INSERT INTO deck (name)
+        VALUES (?)
+    """
 
     deck = deck.strip()
     if deck == "":
@@ -38,13 +50,65 @@ VALUES (?)
 
 def get_deck_id_from_name(deck):
     sql_stmt = """
-SELECT id FROM deck WHERE name = ?
-"""
+        SELECT id FROM deck WHERE name = ?
+    """
+
     try:
         row = db.fetch_one(sql_stmt, (deck,))
         return row[0], ""
     except:
         return -1, "Error: Deck not found"
+
+
+def delete_deck(deck):
+    deck_id, message = get_deck_id_from_name(deck)
+
+    if message != "":
+        return message
+
+    if deck_id == "":
+        return "Error: Deck not found"
+
+    sql_stmt = """
+    delete from card where deck_id = ?
+    """
+    try:
+        db.execute(sql_stmt, (deck_id,))
+        return ""
+    except:
+        return "Error: Could not delete deck"
+
+def update_deck(deck_id, new_deck_name):
+    special_characters_pattern = r"[\[\]\<\>\/\?\\:\*\|\s\&\+]+"
+    deck_id = int(deck_id)
+    print(deck_id)
+    print(new_deck_name)
+
+    new_deck_name = new_deck_name.strip()
+    if new_deck_name == "":
+        return "Error: New deck name cannot be empty"
+
+    if re.search(special_characters_pattern, new_deck_name):
+        return "Error: New deck name cannot contain special characters"
+
+    sql_stmt = """
+        UPDATE deck SET name = ? WHERE id = ?
+    """
+    try:
+        db.execute(sql_stmt, (new_deck_name, deck_id))
+        return ""
+    except:
+        return "Error: Could not rename deck"
+
+def delete_deck(deck_id):
+    sql_stmt = """
+    DELETE FROM deck WHERE id = ?
+    """
+    try:
+        db.execute(sql_stmt, (deck_id,))
+        return ""
+    except:
+        return "Error: Could not delete deck"
 
 def get_deck(deck):
     deck_id, message = get_deck_id_from_name(deck)

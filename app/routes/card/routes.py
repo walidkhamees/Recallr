@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, request
+from flask import Blueprint, jsonify, redirect, request
 from app.services.card import create_card, delete_all_cards, delete_card, update_card
 import app.utils.http_codes as HTTP_CODES
 
@@ -13,20 +13,18 @@ def create_card_route(deck):
         return "Question and answer cannot be empty"
 
     message = create_card(deck, question, answer)
-
     if message != "":
         return message
 
-    return redirect(f"/deck/{deck}")
+    return redirect(f"/deck/{deck}", code=HTTP_CODES.CREATED)
 
 @card_bp.route("/<card_id>", methods=["DELETE"])
 def delete_card_route(deck, card_id):
     message = delete_card(deck, card_id)
-
     if message != "":
-        return message
+        return jsonify({"message": message}), HTTP_CODES.BAD_REQUEST
 
-    return redirect(f"/deck/{deck}", code=HTTP_CODES.DELETED)
+    return jsonify({"message": "Card deleted"}), HTTP_CODES.OK
 
 @card_bp.route("/", methods=["DELETE"])
 def delete_all_cards_route(deck):
@@ -35,7 +33,7 @@ def delete_all_cards_route(deck):
     if message != "":
         return message
 
-    return redirect(f"/deck/{deck}", code=HTTP_CODES.DELETED)
+    return jsonify({"message": "All cards deleted"}), HTTP_CODES.OK
 
 
 @card_bp.route("/", methods=["PUT"])
@@ -47,9 +45,8 @@ def update_card_route(deck):
     answer = data["answer"]
 
     message = update_card(deck, card_id, question, answer)
-
     if not message == "":
-        return message
+        return jsonify({"message": message}), HTTP_CODES.BAD_REQUEST
 
-    return "card updated successfuly"
+    return jsonify({"message": "Card updated"}), HTTP_CODES.OK
 

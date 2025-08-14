@@ -9,11 +9,11 @@ main {
 }
 
 #start-quiz {
-    background-color: #373669;
-    color: white;
-    text-decoration: none;
-    margin: 0;
-    font-size: 0.80em;
+  background-color: #373669;
+  color: white;
+  text-decoration: none;
+  margin: 0;
+  font-size: 0.8em;
 }
 
 .container {
@@ -71,8 +71,6 @@ main > .container > h2 {
 
 .card {
   display: flex;
-  align-items: center;
-  justify-content: center;
 
   cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -86,6 +84,14 @@ main > .container > h2 {
 .answer,
 .question {
   padding: 0.5em;
+  min-height: 100%;
+  height: fit-content;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .card .answer {
@@ -98,4 +104,3 @@ main > .container > h2 {
   align-items: center;
   gap: 0.5em;
 }
-

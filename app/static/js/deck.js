@@ -31,10 +31,10 @@ function handleFlipCard(e) {
   if (flipped) {
     card.setAttribute("data-flipped", "false");
     card.querySelector(".answer").style.display = "none";
-    card.querySelector(".question").style.display = "block";
+    card.querySelector(".question").style.display = "flex";
   } else {
     card.setAttribute("data-flipped", "true");
-    card.querySelector(".answer").style.display = "block";
+    card.querySelector(".answer").style.display = "flex";
     card.querySelector(".question").style.display = "none";
   }
 }
@@ -108,8 +108,10 @@ const closeCreateCardBtn = document.querySelector("#close-create-card-btn");
 const createCardQuestionInput = document.querySelector("#question-input");
 const createCardAnswerInput = document.querySelector("#answer-input");
 const createCardMessages = document.querySelector("#create-card-messages");
+const createCardSubmitBtn = document.querySelector("#submit-create-deck-btn");
 
 createCardQuestionInput.addEventListener("input", (e) => {
+
   createCardQuestionInput.value = e.currentTarget.value;
   const emptyMessage = "Question cannot be empty";
   if (e.currentTarget.value === "") {
@@ -117,6 +119,13 @@ createCardQuestionInput.addEventListener("input", (e) => {
   } else {
     messages.delete(emptyMessage);
   }
+
+  if (messages.size == 0) {
+    createCardSubmitBtn.disabled = false;
+  } else {
+    createCardSubmitBtn.disabled = true;
+  }
+
   updateMessages(createCardMessages);
 });
 
@@ -128,6 +137,13 @@ createCardAnswerInput.addEventListener("input", (e) => {
   } else {
     messages.delete(emptyMessage);
   }
+
+  if (messages.size == 0) {
+    createCardSubmitBtn.disabled = false;
+  } else {
+    createCardSubmitBtn.disabled = true;
+  }
+
   updateMessages(createCardMessages);
 });
 
@@ -166,6 +182,7 @@ const updateCardQuestionInput = document.querySelector(
 );
 const updateCardAnswerInput = document.querySelector("#answer-update-input");
 const updateCardMessages = document.querySelector("#update-card-messages");
+const updateCardSubmitBtn = document.querySelector("#submit-update-deck-btn");
 
 closeUpdateCardBtn.addEventListener("click", () => {
   updateCardModal.style.display = "none";
@@ -180,6 +197,13 @@ updateCardQuestionInput.addEventListener("input", (e) => {
   } else {
     messages.delete(emptyMessage);
   }
+
+  if (messages.size == 0) {
+    updateCardSubmitBtn.disabled = false;
+  } else {
+    updateCardSubmitBtn.disabled = true;
+  }
+
   updateMessages(updateCardMessages);
 });
 
@@ -190,6 +214,13 @@ updateCardAnswerInput.addEventListener("input", (e) => {
   } else {
     messages.delete(emptyMessage);
   }
+
+  if (messages.size == 0) {
+    updateCardSubmitBtn.disabled = false;
+  } else {
+    updateCardSubmitBtn.disabled = true;
+  }
+
   updateMessages(updateCardMessages);
 });
 
@@ -212,10 +243,10 @@ updateCardForm.addEventListener("submit", async (e) => {
     body: JSON.stringify(currentCard),
   });
 
+  // TODO: No need to reload the page just update the card
   if (response.ok) {
     updateCardModal.style.display = "none";
     window.location.reload();
-    // TODO: No need to reload the page just update the card
   }
   updateMessages(updateCardMessages);
 });
@@ -224,7 +255,6 @@ closeCreateCardBtn.addEventListener("click", () => {
   createCardModal.style.display = "none";
   messages.clear();
 });
-
 
 deleteAllForm.addEventListener("submit", async (e) => {
   e.preventDefault();

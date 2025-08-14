@@ -27,7 +27,6 @@ class DB_interface:
     def commit(self):
         self.conn.commit()
 
-
     def fetch_all(self, query: str, params: tuple = ()):
         cur = self.execute(query, params)
         return cur.fetchall()

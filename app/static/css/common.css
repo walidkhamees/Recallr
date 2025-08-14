@@ -33,6 +33,7 @@ header > .container {
   align-items: center;
   margin: 0 auto;
   padding: 0 1em;
+  box-sizing: border-box;
 }
 
 nav > ul {
@@ -191,4 +192,14 @@ input[type="text"] {
 
 .m-0 {
     margin: 0;
+}
+
+.color-gray {
+    color: #eaeaea;
+}
+
+input[type="submit"]:disabled {
+    background-color: #ccc;
+    color: #fff;
+    cursor: not-allowed;
 }

@@ -6,6 +6,11 @@
     <title>Your Decks</title>
     <link rel="stylesheet" href="/static/css/common.css" />
     <link rel="stylesheet" href="/static/css/decks-style.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -45,13 +50,50 @@
               Cancel
             </button>
 
-            <button
+            <input
               type="submit"
               id="submit-delete-all-btn"
               class="confirm-button"
+              value="Delete"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal" id="update-deck-modal">
+      <div class="container">
+        <form id="update-deck-form">
+          <h2>Update deck</h2>
+          <div class="input-group">
+            <label for="name">Deck Name</label>
+            <p class="hint">
+              Ensure that there are no special characters in the deck name. like
+              <code>[</code>, <code>]</code>, <code>&lt;</code>,
+              <code>&gt;</code>, <code>/</code>, <code>?</code>, <code>\</code>,
+              <code>,</code>, <code>:</code>, <code>*</code>,
+              <code>SPACE</code>, <code>|</code> <code>&amp;</code>,
+              <code>+</code>.
+            </p>
+            <input type="text" name="name" id="update-input-deck-name" />
+          </div>
+
+          <ul id="update-deck-messages" class="m-0"></ul>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              id="close-update-deck-btn"
+              class="cancel-button"
             >
-              Delete
+              Cancel
             </button>
+            <input
+              type="submit"
+              id="submit-update-deck-btn"
+              class="confirm-button"
+              value="Update"
+            />
           </div>
         </form>
       </div>
@@ -87,13 +129,13 @@
             >
               Cancel
             </button>
-            <button
+            <input
               type="submit"
+              disabled="true"
               id="submit-create-deck-btn"
               class="confirm-button"
-            >
-              Create
-            </button>
+              value="Create"
+            />
           </div>
         </form>
       </div>
@@ -121,9 +163,19 @@
         </div>
 
         <div class="container" id="decks">
-          {% for deck in decks %}
-          <div class="deck">
-            <a href="/deck/{{ deck }}"> {{ deck }} </a>
+          {% for deck_id, deck in decks.items() %}
+          <div
+            class="deck"
+            data-deck-name="{{deck}}"
+            data-deck-id="{{deck_id}}"
+          >
+            <div class="deck-action">
+              <span class="material-symbols-outlined delete"> delete </span>
+              <span class="material-symbols-outlined edit"> edit </span>
+            </div>
+            <div class="deck-name">
+              <a href="/deck/{{ deck }}"> {{ deck }} </a>
+            </div>
           </div>
           {% endfor %}
         </div>
@@ -134,130 +186,6 @@
       <p>&copy; 2025 Recallr | All rights reserved</p>
     </footer>
 
-    <script>
-      const messages = new Set();
-      const speicalCharactersPattern = /\w*[\[\]<>\/\?\\:\*\|\s\&\+]+\w*/;
-
-      function updateMessages(messagesContainer) {
-        if (messages.size == 0) {
-          messagesContainer.innerHTML = "";
-          return;
-        }
-        if (messagesContainer.childElementCount != messages.size) {
-          messagesContainer.innerHTML = "";
-          for (const message of messages) {
-            const listElement = document.createElement("li");
-            listElement.innerText = message;
-            messagesContainer.appendChild(listElement);
-          }
-        }
-      }
-
-      function updateMessages(messagesContainer) {
-        if (messages.size == 0) {
-          messagesContainer.innerHTML = "";
-          return;
-        }
-
-        if (messagesContainer.childElementCount != messages.size) {
-          messagesContainer.innerHTML = "";
-          for (const message of messages) {
-            const listElement = document.createElement("li");
-            listElement.innerText = message;
-            messagesContainer.appendChild(listElement);
-          }
-        }
-      }
-
-      // Forms
-      const deleteAllForm = document.querySelector("#delete-all-form");
-      const createDeckNameInput = document.querySelector("#input-deck-name");
-      const createDeckMessages = document.querySelector(
-        "#create-deck-messages",
-      );
-      const createDeckSubmitBtn = document.querySelector(
-        "#submit-create-deck-btn",
-      );
-
-      createDeckNameInput.addEventListener("input", (e) => {
-        const inputValue = e.target.value.trim();
-
-        const emptyDeckNameMessage = "Deck name cannot be empty";
-        if (inputValue.length == 0) {
-          messages.add(emptyDeckNameMessage);
-        } else {
-          messages.delete(emptyDeckNameMessage);
-        }
-        updateMessages(createDeckMessages);
-
-        const specialCharactersMessage =
-          "Deck name cannot contain special characters";
-        if (speicalCharactersPattern.test(inputValue)) {
-          messages.add(specialCharactersMessage);
-        } else {
-          messages.delete(specialCharactersMessage);
-        }
-
-        if (messages.size == 0) {
-          createDeckSubmitBtn.disabled = false;
-        }
-        else {
-          createDeckSubmitBtn.disabled = true;
-        }
-
-
-        updateMessages(createDeckMessages);
-      });
-
-      // Modals
-      const createDeckModal = document.querySelector("#create-deck-modal");
-      const deleteAllModal = document.querySelector("#delete-all-modal");
-
-      // opening modal buttons
-      const createDeckBtn = document.querySelector("#new-deck-btn");
-      const deleteAllBtn = document.querySelector("#delete-all-btn");
-
-      // create deck modal buttons
-      const closeBtnCreateDeckModal = document.querySelector(
-        "#close-create-deck-btn",
-      );
-
-      // delete all modal buttons
-      const closeBtnDeleteAllModal = document.querySelector(
-        "#close-delete-all-btn",
-      );
-      const submitBtnDeleteAllModal = document.querySelector(
-        "#submit-delete-all-btn",
-      );
-
-      // close the modals
-      closeBtnCreateDeckModal.addEventListener("click", () => {
-        createDeckModal.style.display = "none";
-      });
-      closeBtnDeleteAllModal.addEventListener("click", () => {
-        deleteAllModal.style.display = "none";
-      });
-
-      // opens the modals
-      createDeckBtn.addEventListener("click", () => {
-        createDeckModal.style.display = "flex";
-        document.querySelector("#input-deck-name").value = "";
-      });
-      deleteAllBtn.addEventListener("click", () => {
-        deleteAllModal.style.display = "flex";
-      });
-
-      deleteAllForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const response = await fetch("/deck", {
-          method: "DELETE",
-        });
-
-        if (response.ok) {
-          window.location.reload();
-          return;
-        }
-      });
-    </script>
+    <script src="/static/js/decks.js"></script>
   </body>
 </html>
