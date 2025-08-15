@@ -16,7 +16,7 @@ def create_card_route(deck):
     if message != "":
         return message
 
-    return redirect(f"/deck/{deck}", code=HTTP_CODES.CREATED)
+    return redirect(f"/deck/{deck}")
 
 @card_bp.route("/<card_id>", methods=["DELETE"])
 def delete_card_route(deck, card_id):
