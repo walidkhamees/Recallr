@@ -34,6 +34,34 @@
       </div>
     </header>
 
+    <!-- delete deck modal -->
+    <div class="modal" id="delete-deck-modal">
+      <div class="container">
+        <form id="delete-deck-form">
+          <h2 id="delete-deck-title">Delete Deck</h2>
+          <div class="input-group">
+            <p>Are you sure you want to delete this deck?</p>
+          </div>
+          <div class="form-actions">
+            <button
+              type="button"
+              id="close-delete-deck-btn"
+              class="cancel-button"
+            >
+              Cancel
+            </button>
+            <input
+              type="submit"
+              id="submit-delete-deck-btn"
+              class="confirm-button"
+              value="Delete"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- delete all decks modal -->
     <div class="modal" id="delete-all-modal">
       <div class="container">
         <form id="delete-all-form">

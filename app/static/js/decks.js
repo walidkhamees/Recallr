@@ -2,6 +2,7 @@ const messages = new Set();
 const speicalCharactersPattern = /\w*[\[\]\<\>\/\?\\:\*\|\s\&\+]+\w*/;
 
 let selectedDeck = {};
+let selectedDeckElement = null;
 
 function updateMessages(messagesContainer) {
   if (messages.size == 0) {
@@ -59,14 +60,13 @@ createDeckNameInput.addEventListener("input", (e) => {
   } else {
     messages.delete(specialCharactersMessage);
   }
+  updateMessages(createDeckMessages);
 
   if (messages.size == 0) {
     createDeckSubmitBtn.disabled = false;
   } else {
     createDeckSubmitBtn.disabled = true;
   }
-
-  updateMessages(createDeckMessages);
 });
 
 // delete all decks
@@ -97,13 +97,14 @@ deleteAllForm.addEventListener("submit", async (e) => {
   }
 });
 
-
 // update deck
 const updateDeckModal = document.querySelector("#update-deck-modal");
 const updateDeckForm = document.querySelector("#update-deck-form");
 const updateDeckMessages = document.querySelector("#update-deck-messages");
 const updateDeckInputName = document.querySelector("#update-input-deck-name");
-const closeBtnUpdateDeckModal = document.querySelector("#close-update-deck-btn");
+const closeBtnUpdateDeckModal = document.querySelector(
+  "#close-update-deck-btn",
+);
 const updateDeckSubmitBtn = document.querySelector("#submit-update-deck-btn");
 const allEditDeckBtns = document.querySelectorAll(".edit");
 
@@ -175,38 +176,62 @@ updateDeckForm.addEventListener("submit", async (e) => {
     window.location.reload();
     return;
   } else {
-
     const responseJson = await response.json();
     const message = responseJson.message;
 
     messages.add(message);
     updateMessages(updateDeckMessages);
     setTimeout(() => {
-        messages.delete(message);
-        updateMessages(updateDeckMessages);
+      messages.delete(message);
+      updateMessages(updateDeckMessages);
     }, 1000);
-
   }
 });
 
+// delete deck
+const deleteDeckModal = document.querySelector("#delete-deck-modal");
+const deleteDeckForm = document.querySelector("#delete-deck-form");
+const deleteDeckTitle = document.querySelector("#delete-deck-title");
+const closeBtnDeleteDeckModal = document.querySelector(
+  "#close-delete-deck-btn",
+);
+
 const allDeleteDeckBtns = document.querySelectorAll(".delete");
 
-async function handleDeleteDeckBtn(e) {
-    const deck = e.target.parentElement.parentElement;
-    const deckId = deck.getAttribute("data-deck-id");
-    if (!deckId) {
-      return;
-    }
-    const response = await fetch(`/deck/${deckId}`, {
-        method: "DELETE",
-    });
-
-    if (response.ok) {
-        deck.remove();
-    }
+function openDeleteDeckModal(e) {
+  const btn = e.currentTarget;
+  const deckElement = btn.parentElement.parentElement;
+  const selectedDeckId = deckElement.getAttribute("data-deck-id");
+  const selectedDeckName = deckElement.getAttribute("data-deck-name");
+  selectedDeck = {
+    deck_id: selectedDeckId,
+    deck_name: selectedDeckName,
+  };
+  selectedDeckElement = deckElement;
+  deleteDeckTitle.innerText = `Delete Deck: ${selectedDeckName}`;
+  deleteDeckModal.style.display = "flex";
 }
 
+deleteDeckForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const response = await fetch(`/deck/${selectedDeck.deck_id}`, {
+    method: "DELETE",
+  });
+
+  if (response.ok) {
+    selectedDeckElement.remove();
+
+    selectedDeck = {};
+    selectedDeckElement = null;
+    deleteDeckModal.style.display = "none";
+  }
+});
 
 allDeleteDeckBtns.forEach((btn) => {
-  btn.addEventListener("click", handleDeleteDeckBtn);
+  btn.addEventListener("click", openDeleteDeckModal);
+});
+closeBtnDeleteDeckModal.addEventListener("click", () => {
+  deleteDeckModal.style.display = "none";
+  selectedDeck = {};
+  selectedDeckElement = null;
 });
