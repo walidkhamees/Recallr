@@ -34,7 +34,7 @@
         <div class="result-card">
           <div class="result-header">
 
-            {% if result.correct > (result.correct + result.wrong + result.unanswered) / 2 %}
+            {% if result.correct >= (result.correct + result.wrong + result.unanswered) / 2 %}
                 <span class="material-icons material-symbols-outlined icon-correct"> trophy </span>
             {% else %}
                 <span class="material-icons material-symbols-outlined icon-wrong">cancel</span>
@@ -42,7 +42,7 @@
 
             <div class="header-message">
               <h2>
-                {{ "Congratulations!" if result.correct > (result.correct +
+              {{ "Congratulations!" if result.correct >= (result.correct +
                 result.wrong + result.unanswered) / 2 else "Try Again!" }}
               </h2>
               <p>You have completed the quiz.</p>

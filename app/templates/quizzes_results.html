@@ -60,7 +60,7 @@
               <div class="result-header">
                 <p class="result-time">{{result.time}}</p>
                 <p>|</p>
-                {% if result.correct > (result.wrong + result.correct) / 2 %}
+                {% if result.correct >= (result.wrong + result.correct) / 2 %}
                 <p class="result-percentage correct">
                   {{ (result.correct / (result.wrong + result.correct)) * 100 |
                   round(2) }}%
