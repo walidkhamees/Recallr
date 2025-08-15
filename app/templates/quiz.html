@@ -34,7 +34,7 @@
         >
           <p class="question">{{ card.question }}</p>
           <form>
-            <input type="text" placeholder="Write your answer" />
+            <input class="quiz-input" type="text" placeholder="Write your answer" />
           </form>
         </div>
         {% endfor %}
@@ -45,86 +45,6 @@
       <p>&copy; 2025 Recallr | All rights reserved</p>
     </footer>
 
-    <script>
-        const cardsContainer = document.querySelector(".card-container");
-        const timeRemaining = document.querySelector("h2 span");
-
-        const quizId = Number(cardsContainer.getAttribute("data-quiz-id"));
-        const deckName = cardsContainer.getAttribute("data-deck-name");
-        const quizStart = Number(cardsContainer.getAttribute("data-quiz-start"));
-        const quizEnd = Number(cardsContainer.getAttribute("data-quiz-end"));
-
-        if (cardsContainer.childElementCount === 0) {
-            window.location.href = `/deck/${deckName}/result/${quizId}`;
-        }
-
-        async function handleAnswer(e) {
-            e.preventDefault();
-            const answer = e.target.querySelector("input").value;
-            const quizId = Number(cardsContainer.getAttribute("data-quiz-id"));
-            const cardId = e.target.parentElement.getAttribute("data-card-id");
-
-            const answerRequest = {
-                quiz_id: quizId,
-                card_id: cardId,
-                answer: answer
-            };
-
-            const request = await fetch(`/deck/${deckName}/quiz`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(answerRequest)
-            });
-
-            if (!request.ok) {
-                alert("Something went wrong");
-            }
-            else {
-                e.target.parentElement.classList.add("turn-transparent");
-
-                setTimeout(() => {
-                    cardsContainer.removeChild(e.target.parentElement);
-                    if (cardsContainer.childElementCount === 0) {
-                        window.location.href = `/deck/${deckName}/result/${quizId}`;
-                    }
-                }, 200);
-            }
-
-        }
-
-
-        const now = Math.floor(Date.now() / 1000);
-        let time = quizEnd - now;
-
-        if (now > quizEnd) {
-            alert("Quiz is over");
-        }
-
-
-        const interval = setInterval(() => {
-            let minutes = Math.floor(time / 60);
-            let seconds = time % 60;
-            timeRemaining.innerText = `0${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-            time--;
-            if (time === 0) {
-              timeRemaining.innerText = "Time's up!";
-              clearInterval(interval);
-            }
-
-        }, 1000);
-
-
-
-        const forms = document.querySelectorAll("form");
-
-        forms.forEach(form => {
-          input = form.querySelector("input");
-          input.value = "";
-          form.addEventListener("submit", handleAnswer);
-        });
-
-    </script>
+    <script src="/static/js/quiz.js"></script>
   </body>
 </html>
