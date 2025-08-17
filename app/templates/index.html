@@ -9,6 +9,7 @@
   </head>
 
   <body>
+
     <header>
       <div class="container">
         <a id="logo" href="/">
@@ -22,6 +23,12 @@
         </a>
         <nav>
           <ul>
+            {% if current_user.is_authenticated %}
+            <li><a href="/logout">Logout</a></li>
+            {% else %}
+            <li><a href="/signup">Sign Up</a></li>
+            <li><a href="/login">Login</a></li>
+            {% endif %}
             <li><a href="/help">Help</a></li>
           </ul>
         </nav>
@@ -40,7 +47,11 @@
           cards. It's like a digital flashcard app, but for your brain.
         </p>
 
-        <a href="/deck" class="cta-button">Start learning</a>
+        {% if current_user.is_authenticated %}
+            <a href="/deck" class="cta-button">Start learning</a>
+        {% else %}
+            <a href="/signup" class="cta-button">Sign Up</a>
+        {% endif %}
       </div>
     </div>
 
@@ -89,7 +100,5 @@
     <footer>
       <p>&copy; 2025 Recallr | All rights reserved</p>
     </footer>
-
-    <script src=""></script>
   </body>
 </html>

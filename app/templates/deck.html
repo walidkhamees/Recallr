@@ -27,7 +27,13 @@
         </a>
         <nav>
           <ul>
-            <li><a href="/help">Help</a></li>
+            {% if current_user.is_authenticated %}
+            <li><a href="/deck">Decks</a></li>
+            <li><a href="/logout">Logout</a></li>
+            {% else %}
+            <li><a href="/signup">Sign Up</a></li>
+            <li><a href="/login">Login</a></li>
+            {% endif %}
           </ul>
         </nav>
       </div>
@@ -37,9 +43,9 @@
       {% with messages = get_flashed_messages() %} {% if messages %}
       <div class="flashes">
         <ul>
-          {% for message in messages %}
-          <li>{{ message }}</li>
-          {% endfor %}
+          <!-- {% for message in messages %} -->
+          <li>{{ messages[(messages|length) - 1] }}</li>
+          <!-- {% endfor %} -->
         </ul>
         <button>
           <span class="material-symbols-outlined icon-small"> close </span>
@@ -98,7 +104,7 @@
       <div class="container">
         <form
           id="create-card-form"
-          action="/deck/{{ deck.name }}/card"
+          action="/deck/{{ deck.id }}/card"
           method="POST"
         >
           <h2>Create a new card</h2>
@@ -220,13 +226,13 @@
             <button class="btn" id="open-input-quiz-time-modal">
               Input Quiz Time
             </button>
-            <a href="{{ deck.name }}/result" id="previous-results" class="btn">
+            <a href="{{ deck.id }}/result" id="previous-results" class="btn">
               <span class="material-symbols-outlined icon-small">
                 bar_chart
               </span>
               <p>Previous results</p>
             </a>
-            <a href="{{ deck.name }}/quiz" id="start-quiz" class="btn">
+            <a href="{{ deck.id }}/quiz" id="start-quiz" class="btn">
               Start Quiz
             </a>
           </div>

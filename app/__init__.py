@@ -1,5 +1,6 @@
 import os
 from flask import Config, render_template
+from flask_login import LoginManager
 from dotenv import load_dotenv
 
 from app.utils import constants
@@ -31,6 +32,15 @@ def create_app(config_class=Config):
     init_db()
     init_db_data()
 
+
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        from app.services.auth import get_user
+        return get_user(user_id)
+
     from .routes.main import main_bp
     app.register_blueprint(main_bp)
 
@@ -46,8 +56,23 @@ def create_app(config_class=Config):
     from .routes.result import result_bp
     app.register_blueprint(result_bp)
 
+    from .routes.auth import auth_bp
+    app.register_blueprint(auth_bp)
+
     @app.errorhandler(404)
-    def page_not_found(e):
-        return render_template("404.html"), 404
+    def page_not_found(_):
+        error = {
+            "title": "404 Not Found",
+            "message": "The page you are looking for does not exist."
+        }
+        return render_template("error.html", error=error), 404
+
+    @app.errorhandler(401)
+    def page_not_authorized(_):
+        error = {
+            "title": "401 Unauthorized",
+            "message": "You are not authorized to access this page."
+        }
+        return render_template("error.html", error=error), 401
 
     return app

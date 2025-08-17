@@ -9,11 +9,6 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
       rel="stylesheet"
     />
-
-    <!-- <link -->
-    <!--   href="https://fonts.googleapis.com/icon?family=Material+Icons" -->
-    <!--   rel="stylesheet" -->
-    <!-- /> -->
   </head>
 
   <body>
@@ -36,6 +31,22 @@
       </div>
     </header>
 
+
+    <div class="error-modal modal">
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flashes">
+        <ul>
+          <!-- {% for message in messages %} -->
+          <li>{{ messages[(messages|length) - 1] }}</li>
+          <!-- {% endfor %} -->
+        </ul>
+        <button>
+          <span class="material-symbols-outlined icon-small"> close </span>
+        </button>
+      </div>
+      {% endif %} {% endwith %}
+    </div>
+
     <main>
       <div class="container">
         <div class="quiz-results-header">
@@ -44,7 +55,7 @@
             Review your past quiz attempts and track your progress over time.
           </p>
           <div class="actions">
-            <a href="/deck/{{ deck }}/result/text" class="btn confirm-button">
+            <a href="/deck/{{ deck_id }}/result/text" class="btn confirm-button">
               <span class="material-symbols-outlined"> text_ad </span>
               <p>Results as a text file</p>
             </a>
@@ -75,7 +86,7 @@
               </div>
               <a
                 class="result-link"
-                href="/deck/{{ deck }}/result/{{ quiz_id }}"
+                href="/deck/{{ deck_id }}/result/{{ quiz_id }}"
               >
                 <span class="material-symbols-outlined"> arrow_outward </span>
               </a>
@@ -89,5 +100,6 @@
     <footer>
       <p>&copy; 2025 Recallr | All rights reserved</p>
     </footer>
+    <script src="/static/js/errorModal.js"></script>
   </body>
 </html>

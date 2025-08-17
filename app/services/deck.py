@@ -1,14 +1,31 @@
 import re
 
-from app.services.db import db
+from flask_login import current_user
 
+from app.services.db import db
+from app.utils.functions import check_logged_in
+
+
+def get_deck_by_id(deck_id):
+    sql_stmt = """
+        SELECT name FROM deck WHERE id = ? AND user_id = ?
+    """
+
+    try:
+        row = db.fetch_one(sql_stmt, (deck_id, current_user.id))
+        return row[0], ""
+    except:
+        return "", "Error: Deck not found"
 
 def get_decks():
+    if not check_logged_in(current_user):
+        return {}, "Error: User not logged in"
+
     sql_stmt = """
-SELECT id, name FROM deck
-"""
+        SELECT id, name FROM deck WHERE user_id = ?
+    """
     try:
-        rows = db.fetch_all(sql_stmt)
+        rows = db.fetch_all(sql_stmt, (current_user.id,))
     except:
         return {}, "Error: Could not fetch decks"
     decks = {}
@@ -17,24 +34,31 @@ SELECT id, name FROM deck
     return decks, ""
 
 def delete_all_decks():
+    if not check_logged_in(current_user):
+        return "Error: User not logged in"
+
     sql_stmt = """
-DELETE FROM deck
-"""
+        DELETE FROM deck WHERE user_id = ?
+    """
     try:
-        db.execute(sql_stmt)
+        db.execute(sql_stmt, (current_user.id,))
         return ""
     except:
         return "Error: Could not delete all decks"
 
 def create_deck(deck):
+    if not check_logged_in(current_user):
+        return "Error: User not logged in"
+
+
     special_characters_pattern = r"[^a-zA-Z0-9]+"
 
     if re.search(special_characters_pattern, deck):
         return "Error: Deck name cannot contain special characters"
 
     sql_stmt = """
-        INSERT INTO deck (name)
-        VALUES (?)
+        INSERT INTO deck (name, user_id)
+        VALUES (?, ?)
     """
 
     deck = deck.strip()
@@ -42,25 +66,16 @@ def create_deck(deck):
         return "Error: Deck name cannot be empty"
 
     try:
-        db.execute(sql_stmt, (deck,))
+        db.execute(sql_stmt, (deck, current_user.id))
         return ""
     except:
         return "Error: Could not create deck"
 
 
-def get_deck_id_from_name(deck):
-    sql_stmt = """
-        SELECT id FROM deck WHERE name = ?
-    """
-
-    try:
-        row = db.fetch_one(sql_stmt, (deck,))
-        return row[0], ""
-    except:
-        return -1, "Error: Deck not found"
-
-
 def update_deck(deck_id, new_deck_name):
+    if not check_logged_in(current_user):
+        return "Error: User not logged in"
+
     special_characters_pattern = r"[^a-zA-Z0-9]+"
     deck_id = int(deck_id)
 
@@ -72,42 +87,43 @@ def update_deck(deck_id, new_deck_name):
         return "Error: New deck name cannot contain special characters"
 
     sql_stmt = """
-        UPDATE deck SET name = ? WHERE id = ?
+        UPDATE deck SET name = ? WHERE id = ? AND user_id = ?
     """
     try:
-        db.execute(sql_stmt, (new_deck_name, deck_id))
+        db.execute(sql_stmt, (new_deck_name, deck_id, current_user.id))
         return ""
     except:
         return "Error: Could not rename deck"
 
 def delete_deck(deck_id):
     sql_stmt = """
-    DELETE FROM deck WHERE id = ?
+    DELETE FROM deck WHERE id = ? AND user_id = ?
     """
     try:
-        db.execute(sql_stmt, (deck_id,))
+        db.execute(sql_stmt, (deck_id, current_user.id))
         return ""
     except:
         return "Error: Could not delete deck"
 
-def get_deck(deck):
-    deck_id, message = get_deck_id_from_name(deck)
-
-    if message != "":
-        return "", message
-
+def get_deck(deck_id):
     if deck_id == "":
-        return "", "Error: Deck not found"
+        return {}, "Error: Deck not found"
+
+    deck, message = get_deck_by_id(deck_id)
+    if message != "":
+        return {}, message
 
     sql_stmt = """
-SELECT card.id, card.question, card.answer, card.last_time_answered_epoch, card.correct
-FROM card
-INNER JOIN deck ON card.deck_id = deck.id
-WHERE deck.id = ?
-"""
-    rows = db.fetch_all(sql_stmt, (deck_id,))
+        SELECT card.id, card.question, card.answer, card.last_time_answered_epoch, card.correct
+        FROM card
+        INNER JOIN deck ON card.deck_id = deck.id
+        WHERE deck.id = ? AND deck.user_id = ?
+    """
+
+    rows = db.fetch_all(sql_stmt, (deck_id, current_user.id))
 
     deck = {
+        "id": deck_id,
         "name": deck,
         "cards": {}
     }

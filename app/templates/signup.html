@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/login-style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <a id="logo" href="/">
+          <img
+            src="/static/svg/stack.svg"
+            alt="Stack Icon"
+            width="48"
+            height="48"
+          />
+          <h1>Recallr</h1>
+        </a>
+        <nav>
+          <ul>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/help">Help</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="error-modal modal">
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flashes">
+        <ul>
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        <button>
+          <span class="material-symbols-outlined icon-small"> close </span>
+        </button>
+      </div>
+      {% endif %} {% endwith %}
+    </div>
+
+    <main>
+      <div class="container">
+        <div class="signup-header">
+            <h2>Sign Up</h2>
+        </div>
+
+          <form action="/signup" method="POST">
+            <div class="input-group">
+              <label for="username">Username</label>
+              <input
+                required
+                type="text"
+                name="username"
+                id="username"
+                placeholder="Enter a username"
+              />
+            </div>
+
+            <div class="input-group">
+              <label for="password">Password</label>
+              <input
+                required
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Enter a password"
+              />
+            </div>
+
+            <div class="input-group">
+              <label for="password_confirm">Confirm Password</label>
+              <input
+                required
+                type="password"
+                name="password_confirm"
+                id="password_confirm"
+                placeholder="Confirm your password"
+              />
+            </div>
+
+            <div class="form-actions">
+              <a
+                type="submit"
+                id="submit-btn"
+                class="confirm-button-outlined m-0"
+                href="/login"
+              >
+                Login Instead
+              </a>
+              <button type="submit" id="submit-btn" class="confirm-button">
+                Sign Up
+              </button>
+            </div>
+          </form>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Recallr | All rights reserved</p>
+    </footer>
+
+    <script src="/static/js/errorModal.js"></script>
+  </body>
+</html>

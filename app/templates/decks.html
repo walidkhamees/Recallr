@@ -14,6 +14,7 @@
   </head>
 
   <body>
+
     <header>
       <div class="container">
         <a id="logo" href="/">
@@ -25,10 +26,15 @@
           />
           <h1>Recallr</h1>
         </a>
-
         <nav>
           <ul>
-            <li><a href="/help">Help</a></li>
+            {% if current_user.is_authenticated %}
+            <li><a href="/deck">Decks</a></li>
+            <li><a href="/logout">Logout</a></li>
+            {% else %}
+            <li><a href="/signup">Sign Up</a></li>
+            <li><a href="/login">Login</a></li>
+            {% endif %}
           </ul>
         </nav>
       </div>
@@ -217,7 +223,7 @@
               <span class="material-symbols-outlined edit"> edit </span>
             </div>
             <div class="deck-name">
-              <a href="/deck/{{ deck }}"> {{ deck }} </a>
+              <a href="/deck/{{ deck_id }}"> {{ deck }} </a>
             </div>
           </div>
           {% endfor %}

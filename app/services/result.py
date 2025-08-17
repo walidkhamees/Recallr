@@ -1,15 +1,12 @@
 from datetime import datetime
-import time
+
+from flask_login import current_user
 
 from app.services.db import db
-from app.services.deck import get_deck_id_from_name
+from app.services.deck import get_deck_by_id
+from app.utils.functions import check_logged_in, get_current_epoch
 
-def get_all_quiz_results(deck):
-    deck_id, message = get_deck_id_from_name(deck)
-    if message != "":
-        return {}, "Error: Deck not found"
-
-
+def get_all_quiz_results(deck_id):
     get_all_quiz_results_stmt = """
         SELECT quiz.id, quiz.start_epoch,
         (
@@ -27,11 +24,16 @@ def get_all_quiz_results(deck):
         ) as total
         FROM quiz
         WHERE quiz.deck_id = ? and (quiz.end_epoch < ? or total = correct + wrong)
+        AND quiz.deck_id IN (
+            SELECT id
+            FROM deck
+            WHERE id = ? AND user_id = ?
+        )
         ORDER BY quiz.start_epoch DESC;
     """
     now = int(datetime.now().timestamp())
     try:
-        rows = db.fetch_all(get_all_quiz_results_stmt, (deck_id, now))
+        rows = db.fetch_all(get_all_quiz_results_stmt, (deck_id, now, deck_id, current_user.id))
     except:
         return {}, "Error: Could not get quiz results"
 
@@ -46,12 +48,9 @@ def get_all_quiz_results(deck):
 
     return results, ""
 
-def get_quiz_result(quiz_id):
+def get_quiz_result(deck_id, quiz_id):
     """
-        gets the result of a quiz
-        args:
-            quiz_id: the id of the quiz
-        returns:
+        gets the result of a quiz args: quiz_id: the id of the quiz returns:
             quiz_result(dict):
             {
                 "correct": number of correct answers,
@@ -71,6 +70,13 @@ def get_quiz_result(quiz_id):
             message: error message if there was an error
     """
 
+    if not check_logged_in(current_user):
+        return {}, "Error: User not logged in"
+
+    _, message = get_deck_by_id(deck_id)
+    if message != "":
+        return {}, message
+
     quiz_done_stmt = """
         SELECT
         (
@@ -89,12 +95,17 @@ def get_quiz_result(quiz_id):
         INNER JOIN quiz ON quiz.id = quiz_card.quiz_id -- for end_epoch
         WHERE quiz_card.quiz_id = ?
         AND (total = (wrong + correct) or quiz.end_epoch < ?)
+        AND quiz.deck_id IN (
+            SELECT id
+            FROM deck
+            WHERE id = ? AND user_id = ?
+        )
         LIMIT 1
     """
 
-    now = int(time.time())
-    row = db.fetch_one(quiz_done_stmt, (quiz_id, quiz_id, quiz_id, quiz_id, now))
-    if row == None and len(row) == 0:
+    now = get_current_epoch()
+    row = db.fetch_one(quiz_done_stmt, (quiz_id, quiz_id, quiz_id, quiz_id, now, deck_id, current_user.id))
+    if row == None or len(row) == 0:
         return {}, "Error: Could not get quiz result"
 
     result_stmt = """
@@ -134,7 +145,6 @@ def get_quiz_result(quiz_id):
         "wrong": wrong,
         "unanswered": total - correct - wrong,
         "quiz_id": quiz_id,
-
         "cards": {}
     }
 

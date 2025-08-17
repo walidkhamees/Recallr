@@ -102,11 +102,6 @@ let messages = new Set();
 // Buttons
 const cards = document.querySelectorAll(".card");
 const deleteCardBtns = document.querySelectorAll(".card-btn.delete-card");
-const updateCardBtns = document.querySelectorAll(".card-btn.edit-card");
-
-updateCardBtns.forEach((editCardBtn) => {
-  editCardBtn.addEventListener("click", handleUpdateCard);
-});
 
 deleteCardBtns.forEach((deleteCardBtn) => {
   deleteCardBtn.addEventListener("click", handleDeleteCardBtn);
@@ -205,6 +200,11 @@ const updateCardQuestionInput = document.querySelector(
 const updateCardAnswerInput = document.querySelector("#answer-update-input");
 const updateCardMessages = document.querySelector("#update-card-messages");
 const updateCardSubmitBtn = document.querySelector("#submit-update-deck-btn");
+const updateCardBtns = document.querySelectorAll(".card-btn.edit-card");
+
+updateCardBtns.forEach((editCardBtn) => {
+  editCardBtn.addEventListener("click", handleUpdateCard);
+});
 
 closeUpdateCardBtn.addEventListener("click", () => {
   updateCardModal.style.display = "none";

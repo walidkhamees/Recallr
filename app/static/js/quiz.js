@@ -4,16 +4,16 @@ const allQuizInput = document.querySelectorAll(".quiz-input");
 let currentQuestion = 0;
 
 if (cardsContainer.childElementCount === 0) {
-  window.location.href = `/deck/${deckName}/result/${quizId}`;
+  window.location.href = `/deck/${deckId}/result/${quizId}`;
 }
 
 const quizId = Number(cardsContainer.getAttribute("data-quiz-id"));
-const deckName = cardsContainer.getAttribute("data-deck-name");
+const deckId = cardsContainer.getAttribute("data-deck-id");
 const quizStart = Number(cardsContainer.getAttribute("data-quiz-start"));
 const quizEnd = Number(cardsContainer.getAttribute("data-quiz-end"));
 
 if (cardsContainer.childElementCount === 0) {
-  window.location.href = `/deck/${deckName}/result/${quizId}`;
+  window.location.href = `/deck/${deckId}/result/${quizId}`;
 }
 
 async function handleAnswer(e) {
@@ -28,7 +28,7 @@ async function handleAnswer(e) {
     answer: answer,
   };
 
-  const request = await fetch(`/deck/${deckName}/quiz`, {
+  const request = await fetch(`/deck/${deckId}/quiz`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -49,7 +49,7 @@ async function handleAnswer(e) {
       }
 
       if (cardsContainer.childElementCount === 0) {
-        window.location.href = `/deck/${deckName}/result/${quizId}`;
+        window.location.href = `/deck/${deckId}/result/${quizId}`;
       }
     }, 200);
   }
@@ -76,7 +76,7 @@ const interval = setInterval(() => {
     clearInterval(interval);
 
     setTimeout(() => {
-      window.location.href = `/deck/${deckName}/result/${quizId}`;
+      window.location.href = `/deck/${deckId}/result/${quizId}`;
     }, 1000);
   }
 }, 1000);

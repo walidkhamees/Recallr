@@ -1,36 +1,46 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, flash
 
+from app.services.deck import get_deck_by_id
 from app.services.quiz import answer_card_in_quiz, create_quiz
 
-quiz_bp = Blueprint("quiz_bp", __name__, url_prefix="/deck/<deck>/quiz")
+quiz_bp = Blueprint("quiz_bp", __name__, url_prefix="/deck/<int:deck_id>/quiz")
 
 @quiz_bp.route("/", methods=["GET"])
-def index(deck):
+def index(deck_id):
     quiz_time = request.args.get("quiz_time", "30")
     if not quiz_time.isdigit():
         return "Error: Quiz time must be a number"
-    quiz_time = int(quiz_time)
 
-    quiz, message = create_quiz(deck, quiz_time)
+    try:
+        quiz_time = int(quiz_time)
+    except:
+        return "Error: Quiz time must be a number"
+
+    quiz, message = create_quiz(deck_id, quiz_time)
     if message != "":
-        return message
+        flash(message)
+        return redirect(f"/deck/{deck_id}")
 
     quiz_id = quiz["quiz_id"]
     if len(quiz["cards"]) == 0:
-        return redirect(f"/deck/{deck}/result/{quiz_id}")
+        return redirect(f"/deck/{deck_id}/result/{quiz_id}")
 
-    return render_template("quiz.html", deck=deck, quiz=quiz)
+    deck, message = get_deck_by_id(deck_id)
+    if message != "":
+        flash(message)
+        return redirect(f"/deck/{deck_id}")
+
+    return render_template("quiz.html", deck_id=deck_id, deck=deck, quiz=quiz)
 
 @quiz_bp.route("/", methods=["POST"])
-def answer_route(deck):
+def answer_route(deck_id):
     answer_request = request.get_json()
 
     quiz_id = answer_request["quiz_id"]
     card_id = answer_request["card_id"]
     answer = answer_request["answer"]
 
-    message = answer_card_in_quiz(quiz_id, deck,  card_id, answer)
-
+    message = answer_card_in_quiz(quiz_id, deck_id, card_id, answer)
     if message != "":
         return message
 

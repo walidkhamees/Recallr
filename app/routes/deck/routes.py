@@ -1,4 +1,5 @@
 from flask import Blueprint, flash, render_template, request, redirect, jsonify
+from flask_login import login_required
 
 from app.services.deck import create_deck, delete_all_decks, get_deck, get_decks, update_deck, delete_deck
 import app.utils.http_codes as HTTP_CODES
@@ -7,6 +8,7 @@ import app.utils.http_codes as HTTP_CODES
 deck_bp = Blueprint("deck_bp", __name__, url_prefix="/deck")
 
 @deck_bp.route("/", methods=["GET"])
+@login_required
 def index_route():
     decks, message = get_decks()
     if message != "":
@@ -15,6 +17,7 @@ def index_route():
     return render_template("decks.html", decks=decks)
 
 @deck_bp.route("/", methods=["POST"])
+@login_required
 def create_deck_route():
     deck_name = request.form.get("name", "").strip()
 
@@ -25,6 +28,7 @@ def create_deck_route():
     return redirect(f"/deck")
 
 @deck_bp.route("/", methods=["PUT"])
+@login_required
 def update_deck_route():
     deck_update_request = request.get_json()
     deck_name = deck_update_request["deck_name"]
@@ -38,6 +42,7 @@ def update_deck_route():
 
 
 @deck_bp.route("/<int:deck_id>", methods=["DELETE"])
+@login_required
 def delete_deck_route(deck_id):
     message = delete_deck(deck_id)
     if message != "":
@@ -46,6 +51,7 @@ def delete_deck_route(deck_id):
     return jsonify({"message": "Deck deleted"}), HTTP_CODES.OK
 
 @deck_bp.route("/", methods=["DELETE"])
+@login_required
 def delete_all_decks_route():
     message = delete_all_decks()
     if message != "":
@@ -53,10 +59,10 @@ def delete_all_decks_route():
 
     return jsonify({"message": "All decks deleted"}), HTTP_CODES.OK
 
-@deck_bp.route("/<deck_name>", methods=["GET"])
-def get_deck_route(deck_name):
-    deck, message = get_deck(deck_name)
-
+@deck_bp.route("/<int:deck_id>", methods=["GET"])
+@login_required
+def get_deck_route(deck_id):
+    deck, message = get_deck(deck_id)
     if message != "":
         flash(message)
         return redirect(f"/deck")

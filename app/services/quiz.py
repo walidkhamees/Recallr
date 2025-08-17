@@ -1,20 +1,19 @@
-import time
-from app.services.deck import get_deck_id_from_name
 from app.services.card import get_card
 from app.services.db import db
 from app.utils import constants
+from app.utils.functions import get_current_epoch
 
-def get_cards_on_answer(quiz_id, answer):
+def get_cards_on_answer(deck_id, answer):
     get_cards_stmt = """
-    SELECT card.id, card.question, card.answer, card.last_time_answered_epoch, card.correct
-    FROM card
-    INNER JOIN deck ON card.deck_id = deck.id
-    WHERE deck.name = ? AND card.correct = ?
-    ORDER by card.last_time_answered_epoch desc
-    LIMIT ?
-"""
+        SELECT card.id, card.question, card.answer, card.last_time_answered_epoch, card.correct
+        FROM card
+        INNER JOIN deck ON card.deck_id = deck.id
+        WHERE deck.id = ? AND card.correct = ?
+        ORDER by card.last_time_answered_epoch desc
+        LIMIT ?
+    """
     try:
-        rows = db.fetch_all(get_cards_stmt, (quiz_id, answer, constants.CARDS_PER_QUIZ))
+        rows = db.fetch_all(get_cards_stmt, (deck_id, answer, constants.CARDS_PER_QUIZ))
 
         cards = {}
         for row in rows:
@@ -35,8 +34,7 @@ def get_cards_on_answer(quiz_id, answer):
     except:
         return {}, "Error: Could not get cards for quiz"
 
-# TODO: Refactor this function
-def get_last_quiz(deck):
+def get_last_quiz(deck_id):
     """
     Get the last quiz for a deck
     args:
@@ -60,25 +58,26 @@ def get_last_quiz(deck):
     """
 
     get_quiz_stmt = """
-SELECT quiz.id, quiz.start_epoch, quiz.end_epoch
-FROM quiz
-INNER JOIN deck ON quiz.deck_id = deck.id
-WHERE deck.name = ?
-ORDER BY quiz.id DESC
-LIMIT 1
-"""
+        SELECT quiz.id, quiz.start_epoch, quiz.end_epoch
+        FROM quiz
+        INNER JOIN deck ON quiz.deck_id = deck.id
+        WHERE deck.id = ?
+        ORDER BY quiz.id DESC
+        LIMIT 1
+    """
 
     get_cards_stmt = """
-SELECT card.id, card.question, card.answer, card.last_time_answered_epoch, card.correct, quiz_card.answered
-FROM card
-INNER JOIN deck ON card.deck_id = deck.id
-INNER JOIN quiz_card ON quiz_card.card_id = card.id
-WHERE quiz_card.quiz_id = ?
-"""
+        SELECT card.id, card.question, card.answer, card.last_time_answered_epoch,
+        card.correct, quiz_card.answered
+        FROM card
+        INNER JOIN deck ON card.deck_id = deck.id
+        INNER JOIN quiz_card ON quiz_card.card_id = card.id
+        WHERE quiz_card.quiz_id = ?
+    """
 
     quiz = {}
     try:
-        row = db.fetch_one(get_quiz_stmt, (deck,))
+        row = db.fetch_one(get_quiz_stmt, (deck_id,))
 
         if not row:
             return {}, ""
@@ -115,7 +114,7 @@ WHERE quiz_card.quiz_id = ?
     except:
         return {}, "Error: Could not get last quiz"
 
-def create_quiz(deck, quiz_time):
+def create_quiz(deck_id, quiz_time):
     """
         create a new quiz or return the last quiz if it's still active
 
@@ -139,14 +138,14 @@ def create_quiz(deck, quiz_time):
             message(str): error message if there was an error
     """
 
-    now = int(time.time())
+    now = get_current_epoch()
     quiz_time = int(quiz_time)
     if quiz_time <= 0:
         return {}, "Error: Quiz time must be greater than 0"
 
     after = now + quiz_time
 
-    last_quiz, message = get_last_quiz(deck)
+    last_quiz, message = get_last_quiz(deck_id)
 
     if message != "":
         return {}, message
@@ -154,15 +153,15 @@ def create_quiz(deck, quiz_time):
     if len(last_quiz) > 0 and (now < last_quiz["end_epoch"]) and len(last_quiz["cards"]) > 0:
         return last_quiz, ""
 
-    new_cards, message = get_cards_on_answer(deck, 0)
+    new_cards, message = get_cards_on_answer(deck_id, 0) # new cards
     if message != "":
         return {}, message
 
-    wrongly_answered_cards, message = get_cards_on_answer(deck, -1) # wrongly answered cards
+    wrongly_answered_cards, message = get_cards_on_answer(deck_id, -1) # wrongly answered cards
     if message != "":
         return {}, message
 
-    rightly_answered_cards, message = get_cards_on_answer(deck, 1) # rightly answered cards
+    rightly_answered_cards, message = get_cards_on_answer(deck_id, 1) # rightly answered cards
     if message != "":
         return {}, message
 
@@ -172,10 +171,6 @@ def create_quiz(deck, quiz_time):
     """
 
     quiz_id = 0
-
-    deck_id, message = get_deck_id_from_name(deck)
-    if message != "":
-        return {}, message
 
     try:
         cur = db.execute_without_commit(create_quiz_stmt, (deck_id, now, after))
@@ -220,12 +215,14 @@ def create_quiz(deck, quiz_time):
     db.commit()
     return quiz, ""
 
-def answer_card_in_quiz(quiz_id, deck, card_id, answer):
-    last_quiz, message = get_last_quiz(deck)
+def answer_card_in_quiz(quiz_id, deck_id, card_id, answer):
+    last_quiz, message = get_last_quiz(deck_id)
     if message != "":
         return message
 
-    now = int(time.time())
+    print(last_quiz)
+
+    now = get_current_epoch()
     answer = answer.strip().lower()
 
     # Check if the quiz is valid and not expired
@@ -252,7 +249,7 @@ def answer_card_in_quiz(quiz_id, deck, card_id, answer):
         WHERE id = ?
     """
 
-    card, message = get_card(deck, card_id)
+    card, message = get_card(deck_id, card_id)
     if message != "":
         return message
 

@@ -1,15 +1,28 @@
 from app.services.db_interface import DB_interface
 from app.utils import constants
 
+from app.utils.functions import hash
+
 db = DB_interface(constants.DB_PATH)
 
 def init_db():
+    user_table = """
+    CREATE TABLE IF NOT EXISTS user (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+    );
+    """
+
     # TODO: while adding the authentication, make sure that
     # the combination of username and deck name should be unique
     deck_table = """
     CREATE TABLE IF NOT EXISTS deck (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE
+        name TEXT NOT NULL,
+        user_id INTEGER NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
+        UNIQUE(user_id, name)
     );
     """
 
@@ -50,6 +63,7 @@ def init_db():
     enable_foreign_keys = "PRAGMA foreign_keys = ON;"
 
     try:
+        db.execute_without_commit(user_table)
         db.execute_without_commit(enable_foreign_keys)
         db.execute_without_commit(deck_table)
         db.execute_without_commit(card_table)
@@ -62,14 +76,23 @@ def init_db():
         raise Exception(f"Error initializing database: {e}")
 
 def init_db_data():
-    # db.execute("DELETE FROM deck")
 
     if db.fetch_one("SELECT COUNT(*) FROM deck")[0] != 0:
         return
 
-    deck_table = "INSERT INTO deck (name) VALUES ('Default');"
-    cur = db.execute(deck_table)
+    password_hash = hash("waleed")
+
+    user_inserts = """
+        INSERT INTO user (username, password) VALUES
+            ('waleed', ?)
+    """
+    cur = db.execute(user_inserts, (password_hash,))
+    user_id = cur.lastrowid
+
+    deck_table = "INSERT INTO deck (name, user_id) VALUES (?, ?)"
+    cur = db.execute(deck_table, ("Default", user_id))
     deck_id = cur.lastrowid
+
 
     card_inserts = [
         (deck_id, 'What is the capital of France?', 'Paris', 1641010191, 0),
