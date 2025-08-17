@@ -38,7 +38,7 @@ main > .container > h2 {
 }
 
 #open-new-card-modal {
-  background-color: #ffdc3f;
+  background-color: #fab600;
   color: white;
 }
 
@@ -107,6 +107,11 @@ main > .container > h2 {
   justify-content: flex-end;
   align-items: center;
   gap: 0.5em;
+}
+
+#open-input-quiz-time-modal {
+    background-color: #b5bd68;
+    color: white;
 }
 
 #previous-results {

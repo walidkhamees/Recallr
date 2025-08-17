@@ -77,7 +77,7 @@ const interval = setInterval(() => {
 
     setTimeout(() => {
       window.location.href = `/deck/${deckName}/result/${quizId}`;
-    }, 200);
+    }, 1000);
   }
 }, 1000);
 
