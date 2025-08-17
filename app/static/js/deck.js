@@ -134,7 +134,8 @@ closeCreateCardBtn.addEventListener("click", () => {
 createCardQuestionInput.addEventListener("input", (e) => {
   createCardQuestionInput.value = e.currentTarget.value;
   const emptyMessage = "Question cannot be empty";
-  if (e.currentTarget.value === "") {
+  const inputValue = e.currentTarget.value.trim();
+  if (inputValue === "") {
     messages.add(emptyMessage);
   } else {
     messages.delete(emptyMessage);
@@ -152,7 +153,8 @@ createCardQuestionInput.addEventListener("input", (e) => {
 createCardAnswerInput.addEventListener("input", (e) => {
   createCardAnswerInput.value = e.currentTarget.value;
   const emptyMessage = "Answer cannot be empty";
-  if (e.currentTarget.value === "") {
+  const inputValue = e.currentTarget.value.trim();
+  if (inputValue === "") {
     messages.add(emptyMessage);
   } else {
     messages.delete(emptyMessage);

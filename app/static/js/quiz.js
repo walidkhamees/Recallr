@@ -1,4 +1,3 @@
-
 const cardsContainer = document.querySelector(".card-container");
 const timeRemaining = document.querySelector("h2 span");
 const allQuizInput = document.querySelectorAll(".quiz-input");
@@ -56,7 +55,7 @@ async function handleAnswer(e) {
   }
 }
 
-const now = Math.floor(Date.now() / 1000);
+let now = Math.floor(Date.now() / 1000);
 let time = quizEnd - now;
 
 if (now > quizEnd) {
@@ -64,13 +63,21 @@ if (now > quizEnd) {
 }
 
 const interval = setInterval(() => {
+  now = Math.floor(Date.now() / 1000);
+  time = quizEnd - now;
+
   let minutes = Math.floor(time / 60);
   let seconds = time % 60;
-  timeRemaining.innerText = `0${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-  time--;
+
+  timeRemaining.innerText = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+
   if (time === 0) {
     timeRemaining.innerText = "Time's up!";
     clearInterval(interval);
+
+    setTimeout(() => {
+      window.location.href = `/deck/${deckName}/result/${quizId}`;
+    }, 200);
   }
 }, 1000);
 
