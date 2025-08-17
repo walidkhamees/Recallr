@@ -1,5 +1,5 @@
 const messages = new Set();
-const speicalCharactersPattern = /\w*[\[\]\<\>\/\?\\:\*\|\s\&\+\`\~\@\!\#\$\%\^\&]+\w*/;
+const speicalCharactersPattern = /[^a-zA-Z0-9]+/;
 
 let selectedDeck = {};
 let selectedDeckElement = null;

@@ -27,7 +27,7 @@ DELETE FROM deck
         return "Error: Could not delete all decks"
 
 def create_deck(deck):
-    special_characters_pattern = r"[\[\]\<\>\/\?\\:\*\|\s\&\+]+"
+    special_characters_pattern = r"[^a-zA-Z0-9]+"
 
     if re.search(special_characters_pattern, deck):
         return "Error: Deck name cannot contain special characters"
@@ -61,7 +61,7 @@ def get_deck_id_from_name(deck):
 
 
 def update_deck(deck_id, new_deck_name):
-    special_characters_pattern = r"\w*[\[\]\<\>\/\?\\:\*\|\s\&\+\`\~\@\!\#\$\%\^\&]+\w*"
+    special_characters_pattern = r"[^a-zA-Z0-9]+"
     deck_id = int(deck_id)
     print(deck_id)
     print(new_deck_name)
