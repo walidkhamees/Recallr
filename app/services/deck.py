@@ -63,8 +63,6 @@ def get_deck_id_from_name(deck):
 def update_deck(deck_id, new_deck_name):
     special_characters_pattern = r"[^a-zA-Z0-9]+"
     deck_id = int(deck_id)
-    print(deck_id)
-    print(new_deck_name)
 
     new_deck_name = new_deck_name.strip()
     if new_deck_name == "":

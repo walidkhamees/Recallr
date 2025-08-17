@@ -119,7 +119,6 @@ def get_quiz_result(quiz_id):
 
     try:
         quiz_cards = db.fetch_all(result_stmt, (quiz_id, quiz_id, quiz_id, quiz_id))
-        print(quiz_cards)
     except:
         return {}, "Error: Could not get quiz result"
 
