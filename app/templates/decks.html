@@ -34,6 +34,21 @@
       </div>
     </header>
 
+    <div class="error-modal modal">
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flashes">
+        <ul>
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        <button>
+          <span class="material-symbols-outlined icon-small"> close </span>
+        </button>
+      </div>
+      {% endif %} {% endwith %}
+    </div>
+
     <!-- delete deck modal -->
     <div class="modal" id="delete-deck-modal">
       <div class="container">
@@ -215,5 +230,6 @@
     </footer>
 
     <script src="/static/js/decks.js"></script>
+    <script src="/static/js/errorModal.js"></script>
   </body>
 </html>

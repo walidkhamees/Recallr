@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, jsonify
+from flask import Blueprint, flash, render_template, request, redirect, jsonify
 
 from app.services.deck import create_deck, delete_all_decks, get_deck, get_decks, update_deck, delete_deck
 import app.utils.http_codes as HTTP_CODES
@@ -12,16 +12,15 @@ def index_route():
     if message != "":
         return message
 
-    print(decks)
     return render_template("decks.html", decks=decks)
 
 @deck_bp.route("/", methods=["POST"])
 def create_deck_route():
     deck_name = request.form.get("name", "").strip()
-    message = create_deck(deck_name)
 
+    message = create_deck(deck_name)
     if message != "":
-        return message
+        flash(message)
 
     return redirect(f"/deck")
 
@@ -50,15 +49,16 @@ def delete_deck_route(deck_id):
 def delete_all_decks_route():
     message = delete_all_decks()
     if message != "":
-        return redirect(f"/deck", code=HTTP_CODES.SERVER_ERROR)
-    return ""
+        return jsonify({"message": message}), HTTP_CODES.BAD_REQUEST
+
+    return jsonify({"message": "All decks deleted"}), HTTP_CODES.OK
 
 @deck_bp.route("/<deck_name>", methods=["GET"])
 def get_deck_route(deck_name):
-    # Handle the case where the deck doesn't exist
     deck, message = get_deck(deck_name)
 
-    if message == "":
-        return render_template("deck.html", deck=deck)
+    if message != "":
+        flash(message)
+        return redirect(f"/deck")
 
-    return message
+    return render_template("deck.html", deck=deck)

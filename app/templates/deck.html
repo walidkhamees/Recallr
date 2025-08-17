@@ -33,6 +33,21 @@
       </div>
     </header>
 
+    <div class="error-modal modal">
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flashes">
+        <ul>
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        <button>
+          <span class="material-symbols-outlined icon-small"> close </span>
+        </button>
+      </div>
+      {% endif %} {% endwith %}
+    </div>
+
     <div class="modal" id="update-card-modal">
       <div class="container">
         <form
@@ -206,7 +221,9 @@
               Input Quiz Time
             </button>
             <a href="{{ deck.name }}/result" id="previous-results" class="btn">
-              <span class="material-symbols-outlined icon-small"> bar_chart </span>
+              <span class="material-symbols-outlined icon-small">
+                bar_chart
+              </span>
               <p>Previous results</p>
             </a>
             <a href="{{ deck.name }}/quiz" id="start-quiz" class="btn">
@@ -262,5 +279,6 @@
     </footer>
 
     <script src="/static/js/deck.js"></script>
+    <script src="/static/js/errorModal.js"></script>
   </body>
 </html>

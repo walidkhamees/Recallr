@@ -60,26 +60,8 @@ def get_deck_id_from_name(deck):
         return -1, "Error: Deck not found"
 
 
-def delete_deck(deck):
-    deck_id, message = get_deck_id_from_name(deck)
-
-    if message != "":
-        return message
-
-    if deck_id == "":
-        return "Error: Deck not found"
-
-    sql_stmt = """
-    delete from card where deck_id = ?
-    """
-    try:
-        db.execute(sql_stmt, (deck_id,))
-        return ""
-    except:
-        return "Error: Could not delete deck"
-
 def update_deck(deck_id, new_deck_name):
-    special_characters_pattern = r"[\[\]\<\>\/\?\\:\*\|\s\&\+]+"
+    special_characters_pattern = r"\w*[\[\]\<\>\/\?\\:\*\|\s\&\+\`\~\@\!\#\$\%\^\&]+\w*"
     deck_id = int(deck_id)
     print(deck_id)
     print(new_deck_name)

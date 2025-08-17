@@ -29,6 +29,22 @@
       </div>
     </header>
 
+    <div class="error-modal modal">
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flashes">
+        <ul>
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        <button>
+          <span class="material-symbols-outlined icon-small"> close </span>
+        </button>
+      </div>
+      {% endif %} {% endwith %}
+    </div>
+
+
     <main>
       <div class="container">
         <div class="result-card">
@@ -129,6 +145,7 @@
     <footer>
       <p>&copy; 2025 Recallr | All rights reserved</p>
     </footer>
+    <script src="/static/js/errorModal.js"></script>
   </body>
 </html>
 

@@ -2,3 +2,4 @@ __pycache__/
 app/decks
 app/db.db
 app/all_results/*
+.env

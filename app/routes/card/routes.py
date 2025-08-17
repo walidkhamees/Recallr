@@ -29,9 +29,8 @@ def delete_card_route(deck, card_id):
 @card_bp.route("/", methods=["DELETE"])
 def delete_all_cards_route(deck):
     message = delete_all_cards(deck)
-
     if message != "":
-        return message
+        return jsonify({"message": message}), HTTP_CODES.BAD_REQUEST
 
     return jsonify({"message": "All cards deleted"}), HTTP_CODES.OK
 
