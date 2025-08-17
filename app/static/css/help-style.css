@@ -1,0 +1,84 @@
+body {
+  background-color: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  padding-bottom: 2em;
+}
+main > .container {
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+
+.help-header-container {
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+.instruction-container {
+  padding: 1.5em 2em;
+  box-sizing: border-box;
+
+  background-color: #fff;
+  border-radius: 0.5em;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.instruction-container-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 0.5em;
+}
+
+.instruction-container-small {
+  padding: 1.5em;
+  box-sizing: border-box;
+
+  background-color: #fff;
+  border-radius: 0.5em;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.instruction-container p,
+li {
+  color: #4c4c4c;
+}
+
+.instruction-container-small p,
+li {
+  color: #4c4c4c;
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 1em;
+}
+
+.icon {
+  width: 1em;
+  height: 1em;
+}
+
+.icon-green {
+  color: #22c55e;
+}
+
+.icon-blue {
+  color: #3b82f6;
+}
+
+.icon-red {
+  color: #ef4444;
+}

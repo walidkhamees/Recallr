@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recallr Help</title>
     <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/help-style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header>
@@ -28,8 +33,8 @@
 
     <main>
       <div class="container">
-        <div class="instruction-container">
-          <h2>Help</h2>
+        <div class="help-header-container">
+          <h1>Help</h1>
           <p>This is a help page for Recallr</p>
         </div>
         <div class="instruction-container">
@@ -57,69 +62,102 @@
           <p>Below is a detailed guide to using every feature of Recallr.</p>
         </div>
 
-        <div class="instruction-container">
-          <h2>How do I create a deck?</h2>
-          <ol>
-            <li>Go to the home page of Recallr.</li>
-            <li>Click on get started.</li>
-            <li>Click on the "Create Deck" button.</li>
-            <li>Enter the name of the deck.</li>
-            <li>Click on the "Create" button.</li>
-          </ol>
-        </div>
+        <div class="instruction-container-grid">
+          <div class="instruction-container-small">
+            <div class="icon-container">
+              <span class="material-symbols-outlined icon icon-blue">
+                add_circle
+              </span>
+              <h2>How do I create a deck?</h2>
+            </div>
+            <ol>
+              <li>Go to the home page of Recallr.</li>
+              <li>Click on get started.</li>
+              <li>Click on the "Create Deck" button.</li>
+              <li>Enter the name of the deck.</li>
+              <li>Click on the "Create" button.</li>
+            </ol>
+          </div>
 
-        <div class="instruction-container">
-          <h2>How can I edit a deck?</h2>
-          <ol>
-            <li>Go to the deck page.</li>
-            <li>Click on the "Edit" button.</li>
-            <li>Enter the new name for the deck.</li>
-            <li>Click on the "Update" button.</li>
-          </ol>
-        </div>
+          <div class="instruction-container-small">
+            <div class="icon-container">
+              <span class="material-symbols-outlined icon icon-green">
+                edit
+              </span>
+              <h2>How can I edit a deck?</h2>
+            </div>
 
-        <div class="instruction-container">
-          <h2>How can I delete a deck?</h2>
-          <ol>
-            <li>Go to the deck page.</li>
-            <li>Click on the "Delete" button.</li>
-            <li>This is going to open a confirmation modal.</li>
-            <li>Click on the "Delete" button.</li>
-          </ol>
-          <p>Note: This will delete all the cards in the deck.</p>
-        </div>
+            <ol>
+              <li>Go to the deck page.</li>
+              <li>Click on the "Edit" button.</li>
+              <li>Enter the new name for the deck.</li>
+              <li>Click on the "Update" button.</li>
+            </ol>
+          </div>
 
-        <div class="instruction-container">
-          <h2>How can I create a card?</h2>
-          <ol>
-            <li>Go to the deck page.</li>
-            <li>Click on the "Create Card" button.</li>
-            <li>Enter the question for the card.</li>
-            <li>Enter the answer for the card.</li>
-            <li>Click on the "Create" button.</li>
-          </ol>
-        </div>
+          <div class="instruction-container-small">
+            <div class="icon-container">
+              <span class="material-symbols-outlined icon icon-red">
+                delete_outline
+              </span>
+              <h2>How can I delete a deck?</h2>
+            </div>
+            <ol>
+              <li>Go to the deck page.</li>
+              <li>Click on the "Delete" button.</li>
+              <li>This is going to open a confirmation modal.</li>
+              <li>Click on the "Delete" button.</li>
+            </ol>
+            <p>Note: This will delete all the cards in the deck.</p>
+          </div>
 
-        <div class="instruction-container">
-          <h2>How can I edit a card?</h2>
-          <ol>
-            <li>Go to the deck page.</li>
-            <li>Click on the "Edit Card" button.</li>
-            <li>Enter the new question for the card.</li>
-            <li>Enter the new answer for the card.</li>
-            <li>Click on the "Update" button.</li>
-          </ol>
-        </div>
+          <div class="instruction-container-small">
+            <div class="icon-container">
+              <span class="material-symbols-outlined icon icon-blue">
+                add_box
+              </span>
+              <h2>How can I create a card?</h2>
+            </div>
+            <ol>
+              <li>Go to the deck page.</li>
+              <li>Click on the "Create Card" button.</li>
+              <li>Enter the question for the card.</li>
+              <li>Enter the answer for the card.</li>
+              <li>Click on the "Create" button.</li>
+            </ol>
+          </div>
 
-        <div class="instruction-container">
-          <h2>How can I delete a card?</h2>
-          <ol>
-            <li>Go to the deck page.</li>
-            <li>Click on the "Delete Card" button.</li>
-            <li>This is going to open a confirmation modal.</li>
-            <li>Click on the "Delete" button.</li>
-          </ol>
-          <p>Note: This is a permanent action and cannot be undone.</p>
+          <div class="instruction-container-small">
+            <div class="icon-container">
+              <span class="material-symbols-outlined icon icon-green">
+                edit
+              </span>
+              <h2>How can I edit a card?</h2>
+            </div>
+            <ol>
+              <li>Go to the deck page.</li>
+              <li>Click on the "Edit Card" button.</li>
+              <li>Enter the new question for the card.</li>
+              <li>Enter the new answer for the card.</li>
+              <li>Click on the "Update" button.</li>
+            </ol>
+          </div>
+
+          <div class="instruction-container-small">
+            <div class="icon-container">
+              <span class="material-symbols-outlined icon icon-red">
+                delete_outline
+              </span>
+              <h2>How can I delete a card?</h2>
+            </div>
+            <ol>
+              <li>Go to the deck page.</li>
+              <li>Click on the "Delete Card" button.</li>
+              <li>This is going to open a confirmation modal.</li>
+              <li>Click on the "Delete" button.</li>
+            </ol>
+            <p>Note: This is a permanent action and cannot be undone.</p>
+          </div>
         </div>
 
         <div class="instruction-container">
@@ -148,5 +186,9 @@
         </div>
       </div>
     </main>
+
+    <footer>
+      <p>&copy; 2025 Recallr | All rights reserved</p>
+    </footer>
   </body>
 </html>
