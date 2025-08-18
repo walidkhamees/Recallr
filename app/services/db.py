@@ -14,8 +14,6 @@ def init_db():
     );
     """
 
-    # TODO: while adding the authentication, make sure that
-    # the combination of username and deck name should be unique
     deck_table = """
     CREATE TABLE IF NOT EXISTS deck (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -52,11 +50,11 @@ def init_db():
     CREATE TABLE IF NOT EXISTS quiz_card (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         quiz_id INTEGER NOT NULL,
-        card_id INTEGER NOT NULL,
-        answered BOOLEAN NOT NULL,
+        question TEXT NOT NULL,
+        correct_answer TEXT NOT NULL,
         answer TEXT,
-        FOREIGN KEY(quiz_id) REFERENCES quiz(id) ON DELETE CASCADE,
-        FOREIGN KEY(card_id) REFERENCES card(id) ON DELETE CASCADE
+        answered BOOLEAN NOT NULL,
+        FOREIGN KEY(quiz_id) REFERENCES quiz(id) ON DELETE CASCADE
     );
     """
 

@@ -20,12 +20,13 @@ async function handleAnswer(e) {
   e.preventDefault();
   const answer = e.target.querySelector("input").value;
   const quizId = Number(cardsContainer.getAttribute("data-quiz-id"));
-  const cardId = e.target.parentElement.getAttribute("data-card-id");
+  const quizCardId = Number(e.target.parentElement.getAttribute("data-quiz-card-id"));
+
 
   const answerRequest = {
     quiz_id: quizId,
-    card_id: cardId,
     answer: answer,
+    quiz_card_id: quizCardId,
   };
 
   const request = await fetch(`/deck/${deckId}/quiz`, {

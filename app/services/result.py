@@ -57,15 +57,15 @@ def get_quiz_result(deck_id, quiz_id):
                 "wrong": number of wrong answers,
                 "unanswered": number of unanswered cards,
                 "quiz_id": id of the quiz,
-                "cards": {
-                    "card_id": {
+                "cards": [
+                    "index": {
                         "question": question of the card,
                         "answer": answer of the card,
                         "correct": whether the card was answered correctly or not,
                         "user_answer": answer given by the user
                     }
                     ...
-                }
+                ]
             }
             message: error message if there was an error
     """
@@ -109,7 +109,7 @@ def get_quiz_result(deck_id, quiz_id):
         return {}, "Error: Could not get quiz result"
 
     result_stmt = """
-        SELECT card.id, quiz_card.answered, quiz_card.answer, card.question, card.answer as user_answer,
+        SELECT quiz_card.answered, quiz_card.answer, question, answer as user_answer, correct_answer,
         (
             SELECT COUNT(*) FROM quiz_card
             WHERE quiz_card.quiz_id = ? AND quiz_card.answered = 1
@@ -123,7 +123,6 @@ def get_quiz_result(deck_id, quiz_id):
             where quiz_card.quiz_id = ?
         ) as total
         FROM quiz_card
-        INNER JOIN card ON quiz_card.card_id = card.id
         WHERE quiz_card.quiz_id = ?;
     """
 
@@ -148,12 +147,12 @@ def get_quiz_result(deck_id, quiz_id):
         "cards": {}
     }
 
-    for card in quiz_cards:
-        quiz_result["cards"][card[0]] = {
-            "question": card[3],
-            "answer": card[4],
-            "correct": card[1] == 1,
-            "user_answer": card[2],
+    for i, card in enumerate(quiz_cards):
+        quiz_result["cards"][i] = {
+            "question": card[2],
+            "answer": card[3],
+            "correct": card[0] == 1,
+            "user_answer": card[4],
         }
 
     return quiz_result, ""

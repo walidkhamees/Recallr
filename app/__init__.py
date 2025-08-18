@@ -21,17 +21,21 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
     app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
+    inited = False
     try:
         if not os.path.exists(constants.DB_PATH):
             with open(constants.DB_PATH, "w") as db_file:
                 db_file.write("")
+                inited = True
         if not os.path.exists(constants.RESULTS_PATH):
             os.mkdir(constants.RESULTS_PATH)
     except Exception as e:
         raise Exception(f"Error creating database file: {e}")
 
     init_db()
-    init_db_data()
+    if not inited:
+        init_db_data()
+
 
 
     login_manager = LoginManager()

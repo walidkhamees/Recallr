@@ -37,10 +37,10 @@ def answer_route(deck_id):
     answer_request = request.get_json()
 
     quiz_id = answer_request["quiz_id"]
-    card_id = answer_request["card_id"]
     answer = answer_request["answer"]
+    quiz_card_id = answer_request["quiz_card_id"]
 
-    message = answer_card_in_quiz(quiz_id, deck_id, card_id, answer)
+    message = answer_card_in_quiz(quiz_id, quiz_card_id, deck_id, answer)
     if message != "":
         return message
 

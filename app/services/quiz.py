@@ -49,14 +49,13 @@ def get_last_quiz(deck_id):
                 "card_id": {
                     "question": question of the card,
                     "answer": answer of the card,
-                    "last_time_answered_epoch": epoch of the last time the card was answered,
-                    "correct": whether the card was answered correctly or not
+                    "correct": correct answer of the card
                 }
             }
         }
         message: error message if there was an error
     """
-
+    
     get_quiz_stmt = """
         SELECT quiz.id, quiz.start_epoch, quiz.end_epoch
         FROM quiz
@@ -65,13 +64,9 @@ def get_last_quiz(deck_id):
         ORDER BY quiz.id DESC
         LIMIT 1
     """
-
     get_cards_stmt = """
-        SELECT card.id, card.question, card.answer, card.last_time_answered_epoch,
-        card.correct, quiz_card.answered
-        FROM card
-        INNER JOIN deck ON card.deck_id = deck.id
-        INNER JOIN quiz_card ON quiz_card.card_id = card.id
+        SELECT question, correct_answer, answer, answered, quiz_card.id
+        FROM quiz_card
         WHERE quiz_card.quiz_id = ?
     """
 
@@ -85,28 +80,24 @@ def get_last_quiz(deck_id):
         quiz["quiz_id"] = row[0]
         quiz["start_epoch"] = row[1]
         quiz["end_epoch"] = row[2]
-
         cards = {}
 
         rows = db.fetch_all(get_cards_stmt, (quiz["quiz_id"],))
         for row in rows:
-            card_id = row[0]
-            question = row[1]
+            question = row[0]
+            correct = row[1]
             answer = row[2]
-            last_answered_epoch = row[3]
-            correct = row[4]
-            answered = row[5]
+            answered = row[3]
+            quiz_card_id = row[4]
 
             if answered:
                 continue
 
-            cards[card_id] = {
+            cards[quiz_card_id] = {
                 "question": question,
                 "answer": answer,
-                "last_time_answered_epoch": last_answered_epoch,
                 "correct": correct
             }
-
         quiz["cards"] = cards
 
         return quiz, ""
@@ -117,7 +108,7 @@ def get_last_quiz(deck_id):
 def create_quiz(deck_id, quiz_time):
     """
         create a new quiz or return the last quiz if it's still active
-
+/
         args:
             deck(str): the name of the deck
         returns:
@@ -192,22 +183,30 @@ def create_quiz(deck_id, quiz_time):
         db.rollback()
         return {}, "Error: No cards available for quiz"
 
+    quiz_cards = []
+    new_cards = list(new_cards.items())
     if len(new_cards) == constants.CARDS_PER_QUIZ:
-        quiz["cards"] = new_cards
+        quiz_cards = list(new_cards.items())
     else:
         needed_cards = constants.CARDS_PER_QUIZ - len(new_cards)
-        wrongly_answered_cards = dict(list(wrongly_answered_cards.items())[:needed_cards])
-        quiz["cards"] = new_cards | wrongly_answered_cards
+        wrongly_answered_cards = list(wrongly_answered_cards.items())[:needed_cards]
+        quiz_cards = new_cards + wrongly_answered_cards
 
-    if len(quiz["cards"]) < constants.CARDS_PER_QUIZ:
-        needed_cards = constants.CARDS_PER_QUIZ - len(quiz["cards"])
-        rightly_answered_cards = dict(list(rightly_answered_cards.items())[:needed_cards])
-        quiz["cards"] = quiz["cards"] | rightly_answered_cards
+    if len(quiz_cards) < constants.CARDS_PER_QUIZ:
+        needed_cards = constants.CARDS_PER_QUIZ - len(quiz_cards)
+        rightly_answered_cards = list(rightly_answered_cards.items())[:needed_cards]
+        quiz_cards = quiz_cards + rightly_answered_cards
 
 
-    for card_id in quiz["cards"]:
+    quiz["cards"] = {}
+    for card_id, card in quiz_cards:
         try:
-            db.execute_without_commit("INSERT INTO quiz_card (quiz_id, card_id, answered) VALUES (?, ?, ?)", (quiz_id, card_id, False))
+            cur = db.execute_without_commit("INSERT INTO quiz_card (quiz_id, answered, question, correct_answer) VALUES (?, ?, ?, ?)", (quiz_id, False, card["question"], card["answer"] ))
+            quiz["cards"][cur.lastrowid] = {
+                "question": card["question"],
+                "answer": card["answer"],
+                "correct": card["correct"]
+            }
         except:
             db.rollback()
             return {}, "Error: Could not insert cards into quiz"
@@ -215,7 +214,7 @@ def create_quiz(deck_id, quiz_time):
     db.commit()
     return quiz, ""
 
-def answer_card_in_quiz(quiz_id, deck_id, card_id, answer):
+def answer_card_in_quiz(quiz_id, quiz_card_id,  deck_id, answer):
     last_quiz, message = get_last_quiz(deck_id)
     if message != "":
         return message
@@ -231,43 +230,44 @@ def answer_card_in_quiz(quiz_id, deck_id, card_id, answer):
 
     # Check if the card is valid and not already answered
     get_quiz_card_stmt = """
-        SELECT quiz_card.id, quiz_card.answered FROM quiz_card
-        where quiz_card.quiz_id = ? AND quiz_card.card_id = ?
+      SELECT quiz_card.id, quiz_card.answered, quiz_card.question, quiz_card.correct_answer
+      FROM quiz_card
+      WHERE quiz_card.quiz_id = ? AND quiz_card.id = ? AND quiz_card.answered = 0
     """
 
-    quiz_card = db.fetch_one(get_quiz_card_stmt, (quiz_id, card_id))
+    quiz_card = db.fetch_one(get_quiz_card_stmt, (quiz_id, quiz_card_id))
     if quiz_card == None:
         return "Error: Card not found"
     elif quiz_card[1] != 0:
         return "Error: Card already answered"
 
+    question = quiz_card[2]
+    correct_answer = quiz_card[3]
+
     answer_card_stmt = """
         UPDATE card
         SET last_time_answered_epoch = ?, correct = ?
-        WHERE id = ?
+        WHERE question = ?
     """
 
-    card, message = get_card(deck_id, card_id)
-    if message != "":
-        return message
 
 
-    correct = 1 if answer.strip().lower() == card["answer"].strip().lower() else -1
+    correct = 1 if answer.strip().lower() == correct_answer.strip().lower() else -1
 
     try:
-        db.execute_without_commit(answer_card_stmt, (now, correct, card_id))
+        db.execute_without_commit(answer_card_stmt, (now, correct, question))
     except:
         db.rollback()
         return "Error: Could not answer card"
 
     answer_card_in_quiz_stmt = """
         UPDATE quiz_card
-        SET (answered, answer) = (?, ?)
-        WHERE quiz_id = ? AND card_id = ?
+        SET (answered, answer, correct_answer) = (?, ?, ?)
+        WHERE quiz_id = ? AND id = ?
     """
 
     try:
-        db.execute_without_commit(answer_card_in_quiz_stmt, (correct, answer, quiz_id, card_id))
+        db.execute_without_commit(answer_card_in_quiz_stmt, (correct, answer, correct_answer, quiz_id, quiz_card_id))
     except:
         db.rollback()
         return "Error: Could not answer card in quiz"

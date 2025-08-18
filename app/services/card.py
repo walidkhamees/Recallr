@@ -77,11 +77,11 @@ def delete_all_cards(deck_id):
         ) AND deck_id = ?
     """
 
-    try:
-        db.execute(delete_all_cards_stmt, (deck_id, current_user.id, deck_id))
-        return ""
-    except:
-        return "Error: Could not delete all cards"
+    # try:
+    db.execute(delete_all_cards_stmt, (deck_id, current_user.id, deck_id))
+    return ""
+    # except:
+    #     return "Error: Could not delete all cards"
 
 def get_card(deck_id, card_id):
     if not check_logged_in(current_user):
