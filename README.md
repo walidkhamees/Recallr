@@ -55,3 +55,28 @@ Please provide below the file name and the line number(s) of at least one exampl
 - [x] It contains conditional statements. Please provide below the file name and the line number(s) of at least
   - File name: `app/services/quiz.py`
   - Line numbers: Line 179: `if len(quiz["cards"]) < constants.CARDS_PER_QUIZ:`
+
+## How to run the app
+
+1. Clone the repository.
+```bash
+git clone https://github.com/walidkhamees/Recallr.git
+```
+
+2. Install the required packages.
+```bash
+pip install -r requirements.txt
+```
+
+3. Run the app.
+```bash
+python run.py
+```
+
+4. Open the app in your browser.
+```bash
+http://127.0.0.1:5000
+```
+
+5. Enjoy!
+
