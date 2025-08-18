@@ -12,7 +12,8 @@
   </head>
 
   <body>
-    <header>
+
+            <header>
       <div class="container">
         <a id="logo" href="/">
           <img
@@ -25,11 +26,19 @@
         </a>
         <nav>
           <ul>
+            {% if current_user.is_authenticated %}
+            <li><a href="/deck">Decks</a></li>
+            <button id="logout">Logout</button>
+            {% else %}
+            <li><a href="/signup">Sign Up</a></li>
+            <li><a href="/login">Login</a></li>
+            {% endif %}
             <li><a href="/help">Help</a></li>
           </ul>
         </nav>
       </div>
     </header>
+
 
 
     <div class="error-modal modal">
@@ -101,5 +110,6 @@
       <p>&copy; 2025 Recallr | All rights reserved</p>
     </footer>
     <script src="/static/js/errorModal.js"></script>
+    <script src="/static/js/logout.js"></script>
   </body>
 </html>

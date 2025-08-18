@@ -29,7 +29,7 @@
           <ul>
             {% if current_user.is_authenticated %}
             <li><a href="/deck">Decks</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <button id="logout">Logout</button>
             {% else %}
             <li><a href="/signup">Sign Up</a></li>
             <li><a href="/login">Login</a></li>
@@ -286,5 +286,6 @@
 
     <script src="/static/js/deck.js"></script>
     <script src="/static/js/errorModal.js"></script>
+    <script src="/static/js/logout.js"></script>
   </body>
 </html>

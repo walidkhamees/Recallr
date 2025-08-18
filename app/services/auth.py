@@ -1,3 +1,4 @@
+import re
 from flask_login import login_user
 from app.services.db import db
 
@@ -16,17 +17,33 @@ def get_user(user_id):
     except:
         return None
 
-def sign_up(username, password):
+def signup(username, password, confirm_password):
     try:
+        username_pattern = r"^[a-zA-Z0-9]+$"
+
         if username == "":
             return "Error: Username cannot be empty"
+        if len(username) < 5:
+            return "Error: Username must be at least 5 characters long"
+        if len(username) > 20:
+            return "Error: Username must be at most 20 characters long"
+        if not re.search(username_pattern, username):
+            return "Error: Username can only contain letters and numbers"
+
         if password == "":
             return "Error: Password cannot be empty"
+        if len(password) < 5:
+            return "Error: Password must be at least 5 characters long"
+        if len(password) > 20:
+            return "Error: Password must be at most 20 characters long"
+        if password != confirm_password:
+            return "Error: Passwords do not match"
+
 
         user_row = db.fetch_one("SELECT * FROM user WHERE username = ?", (username,))
-        if user_row is not None:
+        print("user_row ", user_row)
+        if user_row:
             return "Username already exists"
-
 
 
         password_hash = hash(password)
@@ -42,7 +59,8 @@ def login(username, password):
         return "Username does not exist"
     if hash(password) != user_row[2]:
         return "Incorrect password"
-    user_obj = User(user_row[0], user_row[1], user_row[2])
 
+    user_obj = User(user_row[0], user_row[1], user_row[2])
     login_user(user_obj)
+
     return ""

@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, flash
+from flask import Blueprint, jsonify, render_template, request, redirect
 from flask_login import current_user, logout_user
 
-from app.services.auth import login, sign_up
+from app.services.auth import login, signup
+
+import app.utils.http_codes as HTTP_CODES
 
 auth_bp = Blueprint("user", __name__, url_prefix="/")
 
@@ -13,20 +15,18 @@ def login_page_route():
 
 @auth_bp.route("/login", methods=["POST"])
 def login_route():
-    username = request.form.get("username", "")
-    password = request.form.get("password", "")
-    print(username, password)
+    request_json = request.get_json()
+    username = request_json.get("username", "")
+    password = request_json.get("password", "")
 
     if username == "" or password == "":
         return "Error: Username and password are required"
 
     message = login(username, password)
-    print(message)
     if message != "":
-        flash(message)
-        return redirect("/login")
+        return jsonify({"message": message}), HTTP_CODES.UNAUTHORIZED
 
-    return redirect("/deck")
+    return jsonify({"message": "Logged in successfully"}), HTTP_CODES.OK
 
 @auth_bp.route("/logout", methods=["GET"])
 def logout_route():
@@ -41,20 +41,18 @@ def signup_page_route():
 
 @auth_bp.route("/signup", methods=["POST"])
 def signup_route():
-    username = request.form.get("username", "")
-    password = request.form.get("password", "")
-    confirm_password = request.form.get("password_confirm", "")
+    request_json = request.get_json()
+
+    username = request_json.get("username", "")
+    password = request_json.get("password", "")
+    confirm_password = request_json.get("password_confirm", "")
 
     print("username ", username)
     print("password ", password)
+    print("confirm_password ", confirm_password)
 
-    if password != confirm_password:
-        flash("Error: Passwords do not match")
-        return redirect("/signup")
-
-    message = sign_up(username, password)
+    message = signup(username, password, confirm_password)
     if message != "":
-        flash(message)
-        return redirect("/signup")
+        return jsonify({"message": message}), HTTP_CODES.BAD_REQUEST
 
-    return redirect("/login")
+    return jsonify({"message": "Signed up successfully"}), HTTP_CODES.OK

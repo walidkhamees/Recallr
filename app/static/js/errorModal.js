@@ -7,10 +7,10 @@ if (errors.length > 0) {
 
 const closeBtn = document.querySelector(".error-modal button");
 
-closeBtn.addEventListener("click", () => {
-    errorModal.style.display = "none";
-});
-
-
+if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+        errorModal.style.display = "none";
+    });
+}
 
 

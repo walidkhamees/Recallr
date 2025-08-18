@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from app.utils import constants
 from app.services.db import init_db, init_db_data
+import app.utils.http_codes as HTTP_CODES
 
 
 def create_app(config_class=Config):
@@ -59,7 +60,7 @@ def create_app(config_class=Config):
     from .routes.auth import auth_bp
     app.register_blueprint(auth_bp)
 
-    @app.errorhandler(404)
+    @app.errorhandler(HTTP_CODES.NOT_FOUND)
     def page_not_found(_):
         error = {
             "title": "404 Not Found",
@@ -67,7 +68,7 @@ def create_app(config_class=Config):
         }
         return render_template("error.html", error=error), 404
 
-    @app.errorhandler(401)
+    @app.errorhandler(HTTP_CODES.UNAUTHORIZED)
     def page_not_authorized(_):
         error = {
             "title": "401 Unauthorized",

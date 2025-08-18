@@ -230,6 +230,7 @@ deleteDeckForm.addEventListener("submit", async (e) => {
 allDeleteDeckBtns.forEach((btn) => {
   btn.addEventListener("click", openDeleteDeckModal);
 });
+
 closeBtnDeleteDeckModal.addEventListener("click", () => {
   deleteDeckModal.style.display = "none";
   selectedDeck = {};

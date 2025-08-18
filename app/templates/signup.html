@@ -21,12 +21,13 @@
         </a>
         <nav>
           <ul>
+            <li><a href="/signup">Sign Up</a></li>
             <li><a href="/login">Login</a></li>
-            <li><a href="/help">Help</a></li>
           </ul>
         </nav>
       </div>
     </header>
+
 
     <div class="error-modal modal">
       {% with messages = get_flashed_messages() %} {% if messages %}
@@ -55,34 +56,52 @@
               <input
                 required
                 type="text"
+                minlength="5"
+                maxlength="20"
                 name="username"
                 id="username"
                 placeholder="Enter a username"
               />
+              <ul class="hints">
+                <li>Username cannot be empty</li>
+                <li>Username must be at least 5 characters long</li>
+                <li>Username must be at most 20 characters long</li>
+                <li>Username can only contain letters and numbers</li>
+              </ul>
             </div>
 
             <div class="input-group">
               <label for="password">Password</label>
               <input
                 required
+                minlength="5"
+                maxlength="20"
                 type="password"
                 name="password"
                 id="password"
                 placeholder="Enter a password"
               />
+              <ul class="hints">
+                <li>Password cannot be empty</li>
+                <li>Password must be at least 5 characters long</li>
+                <li>Password must be at most 20 characters long</li>
+              </ul>
             </div>
 
             <div class="input-group">
               <label for="password_confirm">Confirm Password</label>
               <input
                 required
+                minlength="5"
+                maxlength="20"
                 type="password"
                 name="password_confirm"
                 id="password_confirm"
                 placeholder="Confirm your password"
               />
             </div>
-
+            <ul class="messages">
+            </ul>
             <div class="form-actions">
               <a
                 type="submit"
@@ -105,5 +124,6 @@
     </footer>
 
     <script src="/static/js/errorModal.js"></script>
+    <script src="/static/js/signup.js"></script>
   </body>
 </html>

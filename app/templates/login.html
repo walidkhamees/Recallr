@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/static/css/login-style.css" />
   </head>
   <body>
-
     <header>
       <div class="container">
         <a id="logo" href="/">
@@ -34,7 +33,7 @@
         <div class="signup-header">
           <h2>Login</h2>
         </div>
-        <form action="/login" method="POST">
+        <form>
           <div class="input-group">
             <label for="username">Username:</label>
             <input required type="text" name="username" id="username" />
@@ -44,6 +43,7 @@
             <label for="password">Password:</label>
             <input required type="password" name="password" id="password" />
           </div>
+          <ul class="messages"></ul>
 
           <div class="form-actions">
             <button type="submit" id="submit-btn" class="confirm-button">
@@ -57,5 +57,8 @@
     <footer>
       <p>&copy; 2025 Recallr | All rights reserved</p>
     </footer>
+
+    <script src="/static/js/errorModal.js"></script>
+    <script src="/static/js/login.js"></script>
   </body>
 </html>

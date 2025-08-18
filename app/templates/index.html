@@ -24,7 +24,8 @@
         <nav>
           <ul>
             {% if current_user.is_authenticated %}
-            <li><a href="/logout">Logout</a></li>
+            <li><a href="/deck">Decks</a></li>
+            <button id="logout">Logout</button>
             {% else %}
             <li><a href="/signup">Sign Up</a></li>
             <li><a href="/login">Login</a></li>
@@ -100,5 +101,7 @@
     <footer>
       <p>&copy; 2025 Recallr | All rights reserved</p>
     </footer>
+
+    <script src="/static/js/logout.js"></script>
   </body>
 </html>

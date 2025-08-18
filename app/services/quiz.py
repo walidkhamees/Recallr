@@ -220,8 +220,6 @@ def answer_card_in_quiz(quiz_id, deck_id, card_id, answer):
     if message != "":
         return message
 
-    print(last_quiz)
-
     now = get_current_epoch()
     answer = answer.strip().lower()
 
@@ -275,5 +273,4 @@ def answer_card_in_quiz(quiz_id, deck_id, card_id, answer):
         return "Error: Could not answer card in quiz"
 
     db.commit()
-
     return ""
