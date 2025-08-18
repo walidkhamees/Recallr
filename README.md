@@ -68,15 +68,18 @@ git clone https://github.com/walidkhamees/Recallr.git
 pip install -r requirements.txt
 ```
 
-3. Run the app.
+3. Create a .env file with the following content:
+```bash
+echo "FLASK_SECRET_KEY=$(python -c 'import secrets; print(secrets.token_hex(32))')" >> .env
+```
+
+4. Run the app.
 ```bash
 python run.py
 ```
 
-4. Open the app in your browser.
+5. Open the app in your browser.
 ```bash
 http://127.0.0.1:5000
 ```
-
-5. Enjoy!
 
