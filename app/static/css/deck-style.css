@@ -10,7 +10,7 @@ main {
 
 .deck-header {
     justify-content: flex-start;
-    flex-direction: column;
+    align-items: center;
 }
 #start-quiz {
   background-color: #373669;
@@ -65,6 +65,7 @@ main > .container > h2 {
   gap: 0.5em;
   flex: 1;
   min-width: 30%;
+  padding: 0.5em;
 }
 
 .card-btn {

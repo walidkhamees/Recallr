@@ -170,7 +170,7 @@ input[type="password"] {
 
 .deck-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 1em;
   padding: 1em;
@@ -198,8 +198,11 @@ input[type="password"] {
 .deck-header .actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.5em;
   width: fit-content;
+  max-width: 500px;
+  flex-wrap: wrap;
 }
 
 .btn {
