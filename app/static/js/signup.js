@@ -60,7 +60,7 @@ form.addEventListener("submit", async (event) => {
   clearMessages();
 
   const username = usernameElement.value;
-  const password = passwordElement.value;
+  const password = passwordElement.value.trim();
   const passwordConfirm = passwordConfirmElement.value;
 
   validateForm(username, password, passwordConfirm);

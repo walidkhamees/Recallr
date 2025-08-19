@@ -30,7 +30,7 @@ def signup(username, password, confirm_password):
         if not re.search(username_pattern, username):
             return "Error: Username can only contain letters and numbers"
 
-        if password == "":
+        if password.strip() == "":
             return "Error: Password cannot be empty"
         if len(password) < 5:
             return "Error: Password must be at least 5 characters long"

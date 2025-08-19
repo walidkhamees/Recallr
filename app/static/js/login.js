@@ -1,7 +1,3 @@
-if (localStorage.getItem("username")) {
-  window.location.href = "/deck";
-}
-
 form = document.querySelector("form");
 usernameElement = form.querySelector("#username");
 passwordElement = form.querySelector("#password");
@@ -54,7 +50,6 @@ form.addEventListener("submit", async (event) => {
   const responseJson = await response.json();
 
   if (response.ok) {
-    localStorage.setItem("username", username);
     window.location.href = "/deck";
     return;
   } else {
