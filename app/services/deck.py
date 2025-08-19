@@ -61,6 +61,14 @@ def create_deck(deck):
         VALUES (?, ?)
     """
 
+    existing_deck_stmt = """
+        SELECT id FROM deck WHERE name = ? AND user_id = ?
+    """
+
+    existing_deck_row = db.fetch_one(existing_deck_stmt, (deck, current_user.id))
+    if existing_deck_row:
+        return "Error: Deck already exists"
+
     deck = deck.strip()
     if deck == "":
         return "Error: Deck name cannot be empty"
