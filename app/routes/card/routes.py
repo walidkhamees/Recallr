@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, redirect, request
+from flask import Blueprint, flash, jsonify, redirect, request
 from app.services.card import create_card, delete_all_cards, delete_card, update_card
 import app.utils.http_codes as HTTP_CODES
 
@@ -10,11 +10,13 @@ def create_card_route(deck_id):
     answer = request.form.get("answer", "").strip()
 
     if question == "" or answer == "":
-        return "Question and answer cannot be empty"
+        flash("Question and answer cannot be empty")
+        return redirect(f"/deck/{deck_id}")
 
     message = create_card(deck_id, question, answer)
     if message != "":
-        return message
+        flash(message)
+        return redirect(f"/deck/{deck_id}")
 
     return redirect(f"/deck/{deck_id}")
 

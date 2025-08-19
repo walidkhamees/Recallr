@@ -55,7 +55,7 @@ def get_last_quiz(deck_id):
         }
         message: error message if there was an error
     """
-    
+
     get_quiz_stmt = """
         SELECT quiz.id, quiz.start_epoch, quiz.end_epoch
         FROM quiz
@@ -186,7 +186,7 @@ def create_quiz(deck_id, quiz_time):
     quiz_cards = []
     new_cards = list(new_cards.items())
     if len(new_cards) == constants.CARDS_PER_QUIZ:
-        quiz_cards = list(new_cards.items())
+        quiz_cards = new_cards
     else:
         needed_cards = constants.CARDS_PER_QUIZ - len(new_cards)
         wrongly_answered_cards = list(wrongly_answered_cards.items())[:needed_cards]

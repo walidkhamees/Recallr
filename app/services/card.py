@@ -12,6 +12,14 @@ def create_card(deck_id, question, answer):
     if message != "":
         return message
 
+    existing_card_stmt = """
+        SELECT id FROM card WHERE question = ? AND deck_id = ?
+    """
+
+    existing_card_row = db.fetch_one(existing_card_stmt, (question, deck_id,))
+    if existing_card_row:
+        return "Error: Card already exists"
+
     last_answered = get_current_epoch()
     correct = False
     sql_stmt = """
