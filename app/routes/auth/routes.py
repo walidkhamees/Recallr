@@ -47,10 +47,6 @@ def signup_route():
     password = request_json.get("password", "")
     confirm_password = request_json.get("password_confirm", "")
 
-    print("username ", username)
-    print("password ", password)
-    print("confirm_password ", confirm_password)
-
     message = signup(username, password, confirm_password)
     if message != "":
         return jsonify({"message": message}), HTTP_CODES.BAD_REQUEST

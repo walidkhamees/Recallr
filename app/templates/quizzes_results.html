@@ -75,7 +75,7 @@
           <div class="all-results-container">
             {% for quiz_id, result in results.items() %}
 
-            {% if result.wrong + result.correct != 0 %}
+            {% if (result.wrong + result.correct) != 0 %}
                 <div class="quiz-result">
                   <div class="result-header">
                     <p class="result-time">{{result.time}}</p>

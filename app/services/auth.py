@@ -41,7 +41,6 @@ def signup(username, password, confirm_password):
 
 
         user_row = db.fetch_one("SELECT * FROM user WHERE username = ?", (username,))
-        print("user_row ", user_row)
         if user_row:
             return "Username already exists"
 
