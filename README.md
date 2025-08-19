@@ -11,7 +11,8 @@ Recallr is a web application designed to help users make a decks and flashcards 
 
 
 - What is the "new feature" which you have implemented that we haven't seen before?
-<!-- - [ ] The new feature is the ability to create flashcards with AI assistance from a piece of text.  -->
+  - Quizzes are created and the cards chosen are the ones that need to be reviewed.
+    - Cards that were answered wrongly along time ago are shown first and then the cards that were answered correctly.
 
 
 ## Prerequisites
