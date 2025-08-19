@@ -9,8 +9,8 @@ main {
 }
 
 .deck-header {
-    justify-content: flex-start;
-    align-items: center;
+  justify-content: flex-start;
+  align-items: center;
 }
 #start-quiz {
   background-color: #373669;
@@ -93,10 +93,24 @@ main > .container > h2 {
   height: fit-content;
 
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
   width: 100%;
+}
+
+.answer h3 {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.question h3 {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card .answer {
@@ -111,15 +125,14 @@ main > .container > h2 {
 }
 
 #open-input-quiz-time-modal {
-    background-color: #b5bd68;
-    color: white;
+  background-color: #b5bd68;
+  color: white;
 }
 
 #previous-results {
-    background-color: #373669;
-    color: white;
-    text-decoration: none;
-    margin: 0;
-    font-size: 0.8em;
+  background-color: #373669;
+  color: white;
+  text-decoration: none;
+  margin: 0;
+  font-size: 0.8em;
 }
-
