@@ -75,30 +75,33 @@
           <div class="all-results-container">
             {% for quiz_id, result in results.items() %}
 
-            <div class="quiz-result">
-              <div class="result-header">
-                <p class="result-time">{{result.time}}</p>
-                <p>|</p>
-                {% if result.correct >= (result.wrong + result.correct) / 2 %}
-                <p class="result-percentage correct">
-                  {{ (result.correct / (result.wrong + result.correct)) * 100 |
-                  round(2) }}%
-                </p>
-                {% else %}
-                <p class="result-percentage wrong">
-                  {{ (result.correct / (result.wrong + result.correct)) * 100 |
-                  round(2) }}%
-                </p>
-                {% endif %}
-                <!-- put icon here  -->
-              </div>
-              <a
-                class="result-link"
-                href="/deck/{{ deck_id }}/result/{{ quiz_id }}"
-              >
-                <span class="material-symbols-outlined"> arrow_outward </span>
-              </a>
-            </div>
+            {% if result.wrong + result.correct != 0 %}
+                <div class="quiz-result">
+                  <div class="result-header">
+                    <p class="result-time">{{result.time}}</p>
+                    <p>|</p>
+                    {% if result.correct >= (result.wrong + result.correct) / 2 %}
+                    <p class="result-percentage correct">
+                      {{ (result.correct / (result.wrong + result.correct)) * 100 |
+                      round(2) }}%
+                    </p>
+                    {% else %}
+                    <p class="result-percentage wrong">
+                      {{ (result.correct / (result.wrong + result.correct)) * 100 |
+                      round(2) }}%
+                    </p>
+                    {% endif %}
+                    <!-- put icon here  -->
+
+                  </div>
+                  <a
+                    class="result-link"
+                    href="/deck/{{ deck_id }}/result/{{ quiz_id }}"
+                  >
+                    <span class="material-symbols-outlined"> arrow_outward </span>
+                  </a>
+                </div>
+              {% endif %}
             {% endfor %}
           </div>
         </div>
