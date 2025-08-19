@@ -150,9 +150,9 @@ def get_quiz_result(deck_id, quiz_id):
     for i, card in enumerate(quiz_cards):
         quiz_result["cards"][i] = {
             "question": card[2],
-            "answer": card[3],
+            "answer": card[4],
             "correct": card[0] == 1,
-            "user_answer": card[4],
+            "user_answer": card[3],
         }
 
     return quiz_result, ""
